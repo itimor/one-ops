@@ -8,9 +8,10 @@ import websockets
 # 向服务器端认证，用户名密码通过才能退出循环
 async def auth_system(websocket):
     while True:
-        cred_text = input("please enter your username and password: ")
+        cred_text = input("please enter your username: ")
         await websocket.send(cred_text)
         response_str = await websocket.recv()
+        print(response_str)
         if "congratulation" in response_str:
             return True
 
@@ -19,7 +20,7 @@ async def auth_system(websocket):
 async def send_msg(websocket):
     while True:
         _text = input("please enter your context: ")
-        if _text == "exit":
+        if _text == "exit" or _text == 'quit':
             print(f'you have enter "exit", goodbye')
             await websocket.close(reason="user exit")
             return False

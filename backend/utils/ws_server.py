@@ -8,15 +8,14 @@ import websockets
 # 检测客户端权限，用户名密码通过才能退出循环
 async def check_permit(websocket):
     while True:
-        recv_str = await websocket.recv()
-        cred_dict = recv_str.split(":")
-        if cred_dict[0] == "admin" and cred_dict[1] == "123456":
-            response_str = "congratulation, you have connect with server\r\nnow, you can do something else"
-            await websocket.send(response_str)
+        recv_text = await websocket.recv()
+        if recv_text == "admin":
+            response_text = "congratulation, you have connect with server\r\nnow, you can do something else"
+            await websocket.send(response_text)
             return True
         else:
-            response_str = "sorry, the username or password is wrong, please submit again"
-            await websocket.send(response_str)
+            response_text = "sorry, the username or password is wrong, please submit again"
+            await websocket.send(response_text)
 
 
 # 接收客户端消息并处理，这里只是简单把客户端发来的返回回去
