@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
 # author: itimor
 
-from channels.auth import AuthMiddlewareStack
+from django.urls import re_path
 from channels.routing import ProtocolTypeRouter, URLRouter
-
-from chats.routing import ChatRouting
+from channels.auth import AuthMiddlewareStack
+from channels.security.websocket import AllowedHostsOriginValidator, OriginValidator
+from chats.consumers import ChatConsumer
 
 application = ProtocolTypeRouter({
-    # (http->django views is added by default)
-    # 普通的HTTP请求不需要我们手动在这里添加，框架会自动加载过来
-    'websocket': AuthMiddlewareStack(
-        URLRouter(
-            ChatRouting
+    # Empty for now (http->django views is added by default)
+    'websocket': AllowedHostsOriginValidator(
+        AuthMiddlewareStack(
+            URLRouter(
+                [
+                    # int_path
+                    # re_path(r'^chat/(?P<room_name>[0-9]{1,4})/$', ChatConsumer),
+                    # str_path
+                    re_path(r'^chat/(?P<room_name>[\w-]+)/$', ChatConsumer),
+                ]
+            )
         )
-    ),
+    )
 })

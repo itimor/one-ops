@@ -180,4 +180,9 @@ export const componentsMap = {
   // notice
   mail: () => import('@/views/notice/mail'), // mail bot
   telegram: () => import('@/views/notice/telegram'), // telegram bot
+
+  // chat
+  chatgroup: () => import('@/views/chat/chatgroup'),
+  chatmessage: () => import('@/views/chat/chatmessage'),
+  chatroom: () => import('@/views/chat/chatroom'),
 }

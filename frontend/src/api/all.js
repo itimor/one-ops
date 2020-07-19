@@ -18,3 +18,7 @@ export const simple = new Request('/tool/simple/')
 // notices
 export const mail = new Request('/notice/mail/')
 export const telegram = new Request('/notice/telegram/')
+
+// chats
+export const chatgroup = new Request('/chat/chatgroup/')
+export const chatmessage = new Request('/chat/chatmessage/')
