@@ -69,6 +69,8 @@ export default {
         group: undefined
       },
       temp: {
+        create_user: "",
+        group: "",
         message: ""
       },
       room_name: "",
@@ -102,13 +104,19 @@ export default {
       });
     },
     selectGroup(row) {
+      this.reconnect();
       this.room_name = row.code;
       this.getMessageList(row.id);
       this.initWebSocket();
+      this.temp = {
+        user_id: this.user_id,
+        group_id: row.id,
+        message: ""
+      };
     },
     sendMessage() {
+      this.websocketsend();
       this.temp.message = "";
-      console.log(this.temp);
     },
     reconnect() {
       console.log("尝试重连");
@@ -150,7 +158,7 @@ export default {
       console.log("WebSocket连接成功", this.socket.readyState);
       heartCheck.start(this.socket);
       // this.socket.send('发送数据')
-      this.websocketsend();
+      // this.websocketsend();
     },
     websocketonerror(e) {
       //连接建立失败重连
@@ -162,19 +170,18 @@ export default {
       // console.log(e)
       let data = JSON.parse(e.data);
       console.log("得到响应", data);
-      console.log("可以渲染网页数据...");
       // 消息获取成功，重置心跳
       heartCheck.start(this.socket);
     },
     websocketclose(e) {
-      //关闭ws
+      //关闭连接
       console.log("connection closed (" + e.code + ")");
       // this.reconnect();
     },
     websocketsend() {
       //数据发送
       let data = { message: "a1b2c3" };
-      this.socket.send(JSON.stringify(data));
+      this.socket.send(JSON.stringify(this.temp));
     }
   },
   destroyed() {
