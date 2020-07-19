@@ -18,6 +18,8 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
                   url(r'api/sys/', include(('systems.urls', 'systems'), namespace="systems")),
                   # 通知管理
                   url(r'api/notice/', include(('notices.urls', 'notices'), namespace="notices")),
+                  # 聊天管理
+                  url(r'api/chat/', include(('chats.urls', 'chats'), namespace="chats")),
               ]
 
 if settings.APP_ENV == 'prod':

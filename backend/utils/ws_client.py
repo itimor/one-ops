@@ -25,8 +25,8 @@ async def send_msg(ws):
             await ws.close(reason="user exit")
             return False
         await ws.send(_text)
-        recv_text = await ws.recv()
-        print(f"{recv_text}")
+        response_str = await ws.recv()
+        print(response_str)
 
 
 # 客户端主逻辑

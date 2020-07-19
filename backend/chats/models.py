@@ -21,8 +21,8 @@ class ChatGroup(BaseModel):
 
 
 class ChatMessage(BaseModel):
-    create_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='创建者')
     group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE, verbose_name='群组')
+    create_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='创建者')
     message = models.TextField('消息内容')
 
     class Meta:

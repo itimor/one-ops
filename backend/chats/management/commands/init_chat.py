@@ -21,6 +21,6 @@ class Command(BaseCommand):
                                         sequence=20, type=2, parent=basemenu)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='聊天室', code='chatroom', curl='/chatroom', icon='chatroom',
-                                        sequence=30, type=2, hidden=True, parent=basemenu)
+                                        sequence=30, type=2, parent=basemenu)
         init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

@@ -36,9 +36,18 @@
       highlight-current-row
       @sort-change="handleSortChange"
     >
-      <el-table-column label="名称" prop="name"></el-table-column>
-      <el-table-column label="主机" prop="host"></el-table-column>
-      <el-table-column label="账号" prop="user"></el-table-column>
+      <el-table-column label="名称" prop="name" align="center"></el-table-column>
+      <el-table-column label="code" prop="code"></el-table-column>
+      <el-table-column label="群主" prop="create_user">
+        <template slot-scope="{ row }">
+          <el-tag type="success">{{row.create_user.realname}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="群员" prop="join_user">
+        <template slot-scope="{ row }">
+          <el-tag size="mini" style="margin-right: 2px;" v-for="item in row.join_user" :key="item.id">{{item.realname}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button-group>
@@ -46,7 +55,7 @@
               v-if="permissionList.update"
               size="small"
               type="primary"
-              @click="handleUpdate(row)"
+              @click="handleUpdate('update',row)"
             >{{ "编辑" }}</el-button>
             <el-button
               v-if="permissionList.del"
@@ -54,6 +63,12 @@
               type="danger"
               @click="handleDelete(row)"
             >{{ "删除" }}</el-button>
+            <el-button
+              v-if="permissionList.update"
+              size="small"
+              type="warning"
+              @click="handleUpdate('join', row)"
+            >{{ "拉人" }}</el-button>
           </el-button-group>
         </template>
       </el-table-column>
@@ -83,17 +98,8 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="主机" prop="host">
-          <el-input v-model="temp.host" />
-        </el-form-item>
-        <el-form-item label="账号" prop="user">
-          <el-input v-model="temp.user" />
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="temp.password" />
-        </el-form-item>
-        <el-form-item label="接收者" prop="to">
-          <el-input v-model="temp.to" />
+        <el-form-item label="code" prop="code">
+          <el-input v-model="temp.code" />
         </el-form-item>
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
@@ -107,12 +113,29 @@
         >{{ "确定" }}</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="拉人头" :visible.sync="dialogJoinUserVisible" :close-on-click-modal="false">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px">
+        <el-transfer
+          v-model="temp.join_user"
+          filterable
+          :titles="['未选择', '已选择']"
+          :data="user_list"
+          :props="permprops"
+        ></el-transfer>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogJoinUserVisible = false">{{ "取消" }}</el-button>
+        <el-button type="primary" @click="updateData()">{{ "确定" }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { chatgroup, auth } from "@/api/all";
+import { chatgroup, user, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
+import { mapGetters } from "vuex";
 import {
   checkAuthAdd,
   checkAuthDel,
@@ -151,14 +174,24 @@ export default {
         create: "添加"
       },
       rules: {
-        name: [{ required: true, message: "请输入名称", trigger: "blur" }]
-      }
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        code: [{ required: true, message: "请输入code", trigger: "blur" }]
+      },
+      user_list: [],
+      permprops: {
+        key: "id",
+        label: "realname"
+      },
+      dialogJoinUserVisible: false
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["user_id"])
+  },
   created() {
     this.getMenuButton();
     this.getList();
+    this.getUserList();
   },
   methods: {
     checkPermission() {
@@ -185,6 +218,11 @@ export default {
         this.listLoading = false;
       });
     },
+    getUserList() {
+      user.requestGet().then(response => {
+        this.user_list = response.results;
+      });
+    },
     handleFilter() {
       this.getList();
     },
@@ -200,12 +238,10 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        type: "chatgroup",
         name: "",
-        host: "",
-        user: "",
-        password: "123456",
-        to: "",
+        code: "",
+        create_user: this.user_id,
+        join_user: [this.user_id],
         memo: ""
       };
     },
@@ -240,10 +276,17 @@ export default {
         }
       });
     },
-    handleUpdate(row) {
-      this.temp = row;
+    handleUpdate(action, row) {
+      this.temp = Object.assign({}, row, {
+        create_user: row.create_user.id,
+        join_user: row.join_user.map(a => a.id)
+      });
       this.dialogStatus = "update";
-      this.dialogFormVisible = true;
+      if (action == "update") {
+        this.dialogFormVisible = true;
+      } else {
+        this.dialogJoinUserVisible = true;
+      }
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
@@ -256,6 +299,7 @@ export default {
             .requestPut(this.temp.id, this.temp)
             .then(() => {
               this.dialogFormVisible = false;
+              this.dialogJoinUserVisible = false;
               this.$notify({
                 title: "成功",
                 message: "更新成功",

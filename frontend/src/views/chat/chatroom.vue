@@ -1,293 +1,188 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input
-        v-model="listQuery.search"
-        placeholder="请输入内容"
-        clearable
-        prefix-icon="el-icon-search"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-button-group>
-        <el-button
-          class="filter-item"
-          type="primary"
-          icon="el-icon-search"
-          @click="handleFilter"
-        >{{ "搜索" }}</el-button>
-        <el-button
-          v-if="permissionList.add"
-          class="filter-item"
-          type="success"
-          icon="el-icon-edit"
-          @click="handleCreate"
-        >{{ "添加" }}</el-button>
-      </el-button-group>
-    </div>
-
-    <el-table
-      :data="list"
-      v-loading="listLoading"
-      border
-      style="width: 100%"
-      highlight-current-row
-      @sort-change="handleSortChange"
-    >
-      <el-table-column label="名称" prop="name"></el-table-column>
-      <el-table-column label="账号id" prop="uid"></el-table-column>
-      <el-table-column label="token" prop="token"></el-table-column>
-      <el-table-column label="chat_id" prop="chat_id"></el-table-column>
-      <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
-        <template slot-scope="{ row }">
-          <el-button-group>
-            <el-button
-              v-if="permissionList.update"
-              size="small"
-              type="primary"
-              @click="handleUpdate(row)"
-            >{{ "编辑" }}</el-button>
-            <el-button
-              v-if="permissionList.del"
-              size="small"
-              type="danger"
-              @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
-          </el-button-group>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="table-pagination">
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="listQuery.offset"
-        :limit.sync="listQuery.limit"
-        @pagination="getList"
-      />
-    </div>
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="80px"
-        style="width: 400px; margin-left:50px;"
-      >
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item label="账号id" prop="uid">
-          <el-input v-model="temp.uid" />
-        </el-form-item>
-        <el-form-item label="token" prop="token">
-          <el-input v-model="temp.token" />
-        </el-form-item>
-        <el-form-item label="chat_id" prop="chat_id">
-          <el-input v-model="temp.chat_id" />
-        </el-form-item>
-        <el-form-item label="备注" prop="memo">
-          <el-input v-model="temp.memo" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{ "取消" }}</el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
-        >{{ "确定" }}</el-button>
-      </div>
-    </el-dialog>
+    <el-row :gutter="20">
+      <el-col :span="8">
+        <div v-for="item in group_list" :key="item.id">
+          <el-button
+            style="width:100%;height:100%;text-align: left;"
+            type="info"
+            plain
+            @click="selectGroup(item)"
+          >
+            <el-avatar>{{item.code}}</el-avatar>
+            <a style="height: 300px; margin: 0 auto;">{{item.name}}</a>
+          </el-button>
+        </div>
+      </el-col>
+      <el-col :span="16">
+        <div>
+          <div v-for="item in message_list" :key="item.id">
+            <el-avatar>{{item.create_user}}</el-avatar>
+            <el-tag>{{item.message}}</el-tag>
+          </div>
+        </div>
+        <hr />
+        <div>
+          <el-input v-model="temp.message" placeholder="请输入内容" @keyup.enter.native="sendMessage"></el-input>
+          <el-button type="success" round @click="sendMessage">发送</el-button>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { telegram, auth } from "@/api/all";
-import Pagination from "@/components/Pagination";
-import {
-  checkAuthAdd,
-  checkAuthDel,
-  checkAuthView,
-  checkAuthUpdate
-} from "@/utils/permission";
+import { chatgroup, chatmessage } from "@/api/all";
+import { mapGetters } from "vuex";
+
+const heartCheck = {
+  timeout: 60 * 1000,
+  timer: null,
+  serverTimer: null,
+  reset() {
+    this.timer && clearTimeout(this.timer);
+    this.serverTimer && clearTimeout(this.serverTimer);
+  },
+  start(ws) {
+    this.reset();
+    this.timer = setTimeout(() => {
+      // console.log('发送心跳,后端收到后，返回一个心跳消息')
+      // onmessage拿到返回的心跳就说明连接正常
+      ws.send(JSON.stringify({ heart: 1 }));
+      this.serverTimer = setTimeout(() => {
+        // 如果超过一定时间还没响应(响应后触发重置)，说明后端断开了
+        ws.close();
+      }, this.timeout);
+    }, this.timeout);
+  }
+};
 
 export default {
-  name: "telegram",
+  name: "chatroom",
 
-  components: { Pagination },
+  components: {},
   data() {
     return {
-      operationList: [],
-      permissionList: {
-        add: false,
-        del: false,
-        view: false,
-        update: false
-      },
-      list: [],
-      total: 0,
-      listLoading: true,
-      loading: true,
+      group_list: [],
+      message_list: [],
       listQuery: {
-        offset: 1,
-        limit: 20,
-        search: undefined,
-        ordering: undefined
+        group: undefined
       },
-      temp: {},
-      dialogFormVisible: false,
-      dialogStatus: "",
-      textMap: {
-        update: "编辑",
-        create: "添加"
+      temp: {
+        message: ""
       },
-      rules: {
-        name: [{ required: true, message: "请输入名称", trigger: "blur" }]
-      }
+      room_name: "",
+      ws_uri: "/chat/", // ws path
+      lockReconnect: false, // 连接失败不进行重连
+      maxReconnect: 5, // 最大重连次数，若连接失败
+      socket: null
     };
   },
-  computed: {},
-  created() {
-    this.getMenuButton();
-    this.getList();
+  computed: {
+    ...mapGetters(["user_id"])
   },
+  created() {
+    this.getGroupList();
+  },
+  // mounted() {
+  //   this.initWebSocket();
+  // },
   methods: {
-    checkPermission() {
-      this.permissionList.add = checkAuthAdd(this.operationList);
-      this.permissionList.del = checkAuthDel(this.operationList);
-      this.permissionList.view = checkAuthView(this.operationList);
-      this.permissionList.update = checkAuthUpdate(this.operationList);
-    },
-    getMenuButton() {
-      auth
-        .requestMenuButton("telegram")
-        .then(response => {
-          this.operationList = response.results;
-        })
-        .then(() => {
-          this.checkPermission();
-        });
-    },
-    getList() {
-      this.listLoading = true;
-      telegram.requestGet(this.listQuery).then(response => {
-        this.list = response.results;
-        this.total = response.count;
-        this.listLoading = false;
+    getGroupList() {
+      chatgroup.requestGet().then(response => {
+        this.group_list = response.results;
       });
     },
-    handleFilter() {
-      this.getList();
-    },
-    handleSortChange(val) {
-      if (val.order === "ascending") {
-        this.listQuery.ordering = val.prop;
-      } else if (val.order === "descending") {
-        this.listQuery.ordering = "-" + val.prop;
-      } else {
-        this.listQuery.ordering = "";
-      }
-      this.getList();
-    },
-    resetTemp() {
-      this.temp = {
-        type: "telegram",
-        name: "",
-        uid: "",
-        token: "",
-        chat_id: "",
-        memo: ""
+    getMessageList(group_id) {
+      const data = {
+        group: group_id
       };
-    },
-    handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
-      this.loading = false;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+      chatmessage.requestGet(data).then(response => {
+        this.message_list = response.results;
       });
     },
-    createData() {
-      this.$refs["dataForm"].validate(valid => {
-        if (valid) {
-          this.loading = true;
-          telegram
-            .requestPost(this.temp)
-            .then(response => {
-              this.dialogFormVisible = false;
-              this.$notify({
-                title: "成功",
-                message: "创建成功",
-                type: "success",
-                duration: 2000
-              });
-              this.getList();
-            })
-            .catch(() => {
-              this.loading = false;
-            });
+    selectGroup(row) {
+      this.room_name = row.code;
+      this.getMessageList(row.id);
+      this.initWebSocket();
+    },
+    sendMessage() {
+      this.temp.message = "";
+      console.log(this.temp);
+    },
+    reconnect() {
+      console.log("尝试重连");
+      if (this.lockReconnect || this.maxReconnect <= 0) {
+        return;
+      }
+      setTimeout(() => {
+        // this.maxReconnect-- // 不做限制 连不上一直重连
+        this.initWebSocket();
+      }, 60 * 1000);
+    },
+    initWebSocket() {
+      //初始化weosocket
+      try {
+        if ("WebSocket" in window) {
+          console.log(window.location.protocol);
+          const ws_scheme =
+            window.location.protocol == "https:" ? "wss://" : "ws://";
+          const ws_host =
+            process.env.NODE_ENV === "development"
+              ? "127.0.0.1:8000"
+              : window.location.host;
+          const ws_url = ws_scheme + ws_host + this.ws_uri + this.room_name;
+          console.log(ws_url);
+          this.socket = new WebSocket(ws_url);
+        } else {
+          console.log("您的浏览器不支持websocket");
         }
-      });
+        this.socket.onopen = this.websocketonopen;
+        this.socket.onerror = this.websocketonerror;
+        this.socket.onmessage = this.websocketonmessage;
+        this.socket.onclose = this.websocketclose;
+      } catch (e) {
+        this.reconnect();
+      }
     },
-    handleUpdate(row) {
-      this.temp = row;
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+    websocketonopen() {
+      //连接建立之后执行send方法发送数据
+      console.log("WebSocket连接成功", this.socket.readyState);
+      heartCheck.start(this.socket);
+      // this.socket.send('发送数据')
+      this.websocketsend();
     },
-    updateData() {
-      this.$refs["dataForm"].validate(valid => {
-        if (valid) {
-          this.loading = true;
-          telegram
-            .requestPut(this.temp.id, this.temp)
-            .then(() => {
-              this.dialogFormVisible = false;
-              this.$notify({
-                title: "成功",
-                message: "更新成功",
-                type: "success",
-                duration: 2000
-              });
-            })
-            .catch(() => {
-              this.loading = false;
-            });
-        }
-      });
+    websocketonerror(e) {
+      //连接建立失败重连
+      console.log("WebSocket连接发生错误", e);
+      this.reconnect();
     },
-    handleDelete(row) {
-      this.$confirm("是否确定删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          telegram.requestDelete(row.id).then(() => {
-            this.$message({
-              message: "删除成功",
-              type: "success"
-            });
-            this.getList();
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+    websocketonmessage(e) {
+      //数据接收
+      // console.log(e)
+      let data = JSON.parse(e.data);
+      console.log("得到响应", data);
+      console.log("可以渲染网页数据...");
+      // 消息获取成功，重置心跳
+      heartCheck.start(this.socket);
+    },
+    websocketclose(e) {
+      //关闭ws
+      console.log("connection closed (" + e.code + ")");
+      // this.reconnect();
+    },
+    websocketsend() {
+      //数据发送
+      let data = { message: "a1b2c3" };
+      this.socket.send(JSON.stringify(data));
     }
+  },
+  destroyed() {
+    this.socket.close(); //离开路由之后断开websocket连接
   }
 };
 </script>
+
+
+<style lang="scss" scope>
+</style>

@@ -5,6 +5,13 @@ from chats.models import *
 from rest_framework import serializers
 
 
+class ChatGroupReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatGroup
+        fields = '__all__'
+        depth = 1
+
+
 class ChatGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatGroup
