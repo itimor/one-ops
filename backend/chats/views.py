@@ -21,7 +21,7 @@ class ChatMessageViewSet(BulkModelMixin):
     queryset = ChatMessage.objects.all()
     serializer_class = ChatMessageSerializer
     search_fields = ['message']
-    filter_fields = ['group', 'create_user']
+    filter_fields = ['create_user']
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve'] or self.resultData:
