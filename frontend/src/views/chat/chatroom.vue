@@ -17,7 +17,7 @@
       <el-col :span="16">
         <div>
           <div v-for="item in message_list" :key="item.id">
-            <el-avatar>{{item.create_user}}</el-avatar>
+            <el-avatar>{{item.create_user.realname}}</el-avatar>
             <el-tag>{{item.message}}</el-tag>
           </div>
         </div>
@@ -46,7 +46,7 @@ const heartCheck = {
   start(ws) {
     this.reset();
     this.timer = setTimeout(() => {
-      // console.log('发送心跳,后端收到后，返回一个心跳消息')
+      console.log('发送心跳,后端收到后，返回一个心跳消息')
       // onmessage拿到返回的心跳就说明连接正常
       ws.send(JSON.stringify({ heart: 1 }));
       this.serverTimer = setTimeout(() => {
@@ -66,6 +66,7 @@ export default {
       group_list: [],
       message_list: [],
       listQuery: {
+        join_user: "",
         group: undefined
       },
       temp: {
@@ -74,7 +75,7 @@ export default {
         message: ""
       },
       room_name: "",
-      ws_uri: "/chat/", // ws path
+      ws_uri: "/ws/chat/", // ws path
       lockReconnect: false, // 连接失败不进行重连
       maxReconnect: 5, // 最大重连次数，若连接失败
       socket: null
@@ -91,7 +92,8 @@ export default {
   // },
   methods: {
     getGroupList() {
-      chatgroup.requestGet().then(response => {
+      this.listQuery.join_user = this.user_id
+      chatgroup.requestGet(this.listQuery).then(response => {
         this.group_list = response.results;
       });
     },
@@ -124,7 +126,7 @@ export default {
         return;
       }
       setTimeout(() => {
-        // this.maxReconnect-- // 不做限制 连不上一直重连
+        // this.maxReconnect-- // 不做限制
         this.initWebSocket();
       }, 60 * 1000);
     },
@@ -132,11 +134,8 @@ export default {
       //初始化weosocket
       try {
         if ("WebSocket" in window) {
-          console.log(window.location.protocol);
-          const ws_scheme =
-            window.location.protocol == "https:" ? "wss://" : "ws://";
-          const ws_host =
-            process.env.NODE_ENV === "development"
+          const ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
+          const ws_host = process.env.NODE_ENV === "development"
               ? "127.0.0.1:8000"
               : window.location.host;
           const ws_url = ws_scheme + ws_host + this.ws_uri + this.room_name;
@@ -157,8 +156,6 @@ export default {
       //连接建立之后执行send方法发送数据
       console.log("WebSocket连接成功", this.socket.readyState);
       heartCheck.start(this.socket);
-      // this.socket.send('发送数据')
-      // this.websocketsend();
     },
     websocketonerror(e) {
       //连接建立失败重连
@@ -167,20 +164,19 @@ export default {
     },
     websocketonmessage(e) {
       //数据接收
-      // console.log(e)
-      let data = JSON.parse(e.data);
-      console.log("得到响应", data);
+      const data = JSON.parse(e.data);
+      this.message_list.push(data)
+      // console.log("得到响应", data);
       // 消息获取成功，重置心跳
       heartCheck.start(this.socket);
     },
     websocketclose(e) {
       //关闭连接
-      console.log("connection closed (" + e.code + ")");
-      // this.reconnect();
+      console.log("ws连接已断开 (" + e.code + ")");
+      this.reconnect();
     },
     websocketsend() {
       //数据发送
-      let data = { message: "a1b2c3" };
       this.socket.send(JSON.stringify(this.temp));
     }
   },

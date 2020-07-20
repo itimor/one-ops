@@ -16,7 +16,7 @@ application = ProtocolTypeRouter({
                     # int_path
                     # re_path(r'^chat/(?P<room_name>[0-9]{1,4})/$', ChatConsumer),
                     # str_path
-                    re_path(r'^chat/(?P<room_name>[\w-]+)', ChatConsumer),
+                    re_path(r'^ws/chat/(?P<room_name>[\w-]+)', ChatConsumer),
                 ]
             )
         )

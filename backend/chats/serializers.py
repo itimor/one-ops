@@ -18,6 +18,13 @@ class ChatGroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ChatMessageReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessage
+        fields = '__all__'
+        depth = 1
+
+
 class ChatMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatMessage
