@@ -84,7 +84,6 @@
 import { chatgroup, chatmessage } from "@/api/all";
 import { mapGetters } from "vuex";
 import mycard from "./pages/mycard";
-import chatList from "./pages/chatlist";
 
 const heartCheck = {
   timeout: 60 * 1000,
@@ -111,7 +110,7 @@ const heartCheck = {
 export default {
   name: "chatroom",
 
-  components: { mycard, chatList },
+  components: { mycard },
   data() {
     return {
       group_list: [],
