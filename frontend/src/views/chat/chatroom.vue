@@ -42,12 +42,15 @@
             </ul>
           </div>
         </div>
-        <div class="chat-message">
+        <div v-if="selectId<1" class="chat-message">
+          <p class="empty_tip">点击左侧群组，开启奇妙对话</p>
+        </div>
+        <div v-else class="chat-message">
           <div class="message">
             <header class="header">
               <div class="friendname">{{selectName}}</div>
             </header>
-            <div class="message-wrapper" ref="list">
+            <div class="message-wrapper" ref="list_message">
               <ul>
                 <li v-for="item in message_list" class="message-item">
                   <div class="time">
@@ -64,6 +67,12 @@
             </div>
           </div>
           <div class="text">
+            <div class="emoji">
+              <i class="icon icon-lock el-icon-picture-outline-round"></i>
+              <i class="icon icon-look el-icon-folder"></i>
+              <i class="icon icon-look el-icon-scissors"></i>
+              <i class="icon icon-look el-icon-chat-dot-round"></i>
+            </div>
             <textarea ref="text" v-model="temp.message" @keyup="onKeyup"></textarea>
             <div class="send" @click="sendMessage">
               <span>发送(S)</span>
@@ -141,9 +150,19 @@ export default {
   created() {
     this.getGroupList();
   },
-  // mounted() {
-  //   this.initWebSocket();
-  // },
+  mounted() {
+    //   this.initWebSocket();
+    // 在进入的时候 聚焦输入框
+    this.$refs.text.focus();
+  },
+  watch: {
+    // 在选择其它对话的时候 聚焦输入框
+    selectId() {
+      setTimeout(() => {
+        this.$refs.text.focus();
+      }, 0);
+    }
+  },
   methods: {
     getGroupList() {
       this.listQuery.join_user = this.user_id;
@@ -159,13 +178,23 @@ export default {
         this.message_list = response.results;
       });
     },
-
+    scrollToBottom() {
+      //  在页面加载时让信息滚动到最下面
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.$refs.list_message.scrollTop = this.$refs.list_message.scrollHeight;
+        }, 0);
+      });
+    },
     selectGroup(row) {
+      this.message_list = [];
       this.reconnect();
       this.room_name = row.code;
       this.selectId = row.id;
       this.selectName = row.name;
-      this.getMessageList(row.id);
+      this.message_list = row.messages;
+      this.scrollToBottom();
+      //this.getMessageList(row.id);
       this.initWebSocket();
       this.temp = {
         user_id: this.user_id,
@@ -176,11 +205,19 @@ export default {
     // 按回车发送信息
     onKeyup(e) {
       if (e.keyCode === 13) {
-        this.send();
+        this.sendMessage();
       }
     },
     sendMessage() {
-      this.websocketsend();
+      // 当输入框中的值为空时 弹出提示  并在一秒后消失
+      if (this.temp.message.replace(/[\r\n]/g, "") === "") {
+        this.empty_warn = true;
+        setTimeout(() => {
+          this.empty_warn = false;
+        }, 1000);
+      } else {
+        this.websocketsend();
+      }
       this.temp.message = "";
     },
     reconnect() {
@@ -233,6 +270,7 @@ export default {
       this.message_list.push(data);
       // console.log("得到响应", data);
       // 消息获取成功，重置心跳
+      this.scrollToBottom();
       heartCheck.start(this.socket);
     },
     websocketclose(e) {
@@ -345,6 +383,13 @@ ul {
       .chat-message {
         width: 550px;
         flex: 1;
+        .empty_tip {
+          color:#999;
+          font-size: 26px;
+          line-height: 500px;
+          vertical-align: middle;
+          text-align: center;
+        }
         .message {
           width: 100%;
           height: 450px;
@@ -433,16 +478,33 @@ ul {
         position: relative;
         height: 150px;
         background: #fff;
-        border-right:1px solid #e6e6e6;
-        border-bottom:1px solid #e6e6e6;
+        border-right: 1px solid #e6e6e6;
+        .emoji {
+          position: relative;
+          width: 100%;
+          height: 40px;
+          line-height: 40px;
+          font-size: 18px;
+          padding: 0 20px;
+          box-sizing: border-box;
+          color: #7c7c7c;
+          .icon-look {
+            padding: 0 5px;
+            cursor: pointer;
+            &:hover {
+              color: #90ec90;
+            }
+          }
+        }
         textarea {
           box-sizing: border-box;
-          padding: 5px;
+          padding: 5px 20px;
           height: 110px;
           width: 100%;
           border: none;
           outline: none;
           resize: none;
+          border-bottom: 1px solid #e6e6e6;
         }
         .send {
           position: absolute;

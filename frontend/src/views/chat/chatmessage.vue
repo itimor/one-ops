@@ -18,6 +18,14 @@
           icon="el-icon-search"
           @click="handleFilter"
         >{{ "搜索" }}</el-button>
+        <el-button
+          v-if="permissionList.del"
+          :disabled="multipleSelection.length<1"
+          class="filter-item"
+          type="danger"
+          icon="el-icon-delete"
+          @click="handleBatchDel"
+        >{{ "删除" }}</el-button>
       </el-button-group>
     </div>
 
@@ -28,28 +36,21 @@
       style="width: 100%"
       highlight-current-row
       @sort-change="handleSortChange"
+      @selection-change="handleSelectionChange"
     >
-      <el-table-column label="群组" prop="group"></el-table-column>
-      <el-table-column label="创建者" prop="create_user"></el-table-column>
-      <el-table-column label="消息" prop="message"></el-table-column>
-      <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
+      <el-table-column type="selection" width="55" />
+      <el-table-column label="群组" prop="group">
         <template slot-scope="{ row }">
-          <el-button-group>
-            <el-button
-              v-if="permissionList.update"
-              size="small"
-              type="primary"
-              @click="handleUpdate(row)"
-            >{{ "编辑" }}</el-button>
-            <el-button
-              v-if="permissionList.del"
-              size="small"
-              type="danger"
-              @click="handleDelete(row)"
-            >{{ "删除" }}</el-button>
-          </el-button-group>
+          <el-tag type="primary">{{row.group.name}}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="创建者" prop="create_user">
+        <template slot-scope="{ row }">
+          <el-tag type="success">{{row.create_user.realname}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="消息" prop="message"></el-table-column>
+      <el-table-column label="创建时间" prop="create_time"></el-table-column>
     </el-table>
     <div class="table-pagination">
       <pagination
@@ -96,6 +97,7 @@ export default {
         search: undefined,
         ordering: undefined
       },
+      multipleSelection: []
     };
   },
   computed: {},
@@ -141,18 +143,19 @@ export default {
       }
       this.getList();
     },
-    handleDelete(row) {
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    handleBatchDel() {
       this.$confirm("是否确定删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          chatmessage.requestDelete(row.id).then(() => {
-            this.$message({
-              message: "删除成功",
-              type: "success"
-            });
+          const ids = this.multipleSelection.map(x => x.id);
+          chatmessage.requestBulkDelete(ids).then(response => {
+            console.log(response.results);
             this.getList();
           });
         })

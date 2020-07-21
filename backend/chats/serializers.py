@@ -19,7 +19,7 @@ class ChatMessageSerializer(serializers.ModelSerializer):
 
 
 class ChatGroupReadSerializer(serializers.ModelSerializer):
-    messages = ChatMessageSerializer(many=True, read_only=True)
+    messages = ChatMessageReadSerializer(many=True, read_only=True)
 
     class Meta:
         model = ChatGroup

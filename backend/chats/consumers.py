@@ -45,7 +45,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
 
-
     async def chat_message(self, event):
         obj = await save_message(event)
         await self.send(text_data=json.dumps(obj))
@@ -63,6 +62,7 @@ def save_message(event):
     group_id = event['group_id']
     message = event['message']
     obj = ChatMessage.objects.create(create_user_id=user_id, group_id=group_id, message=message)
+    print(obj)
     serializer = ChatMessageReadSerializer(obj)
     j = JSONRenderer().render(serializer.data)
     data = json.loads(text_(j))
