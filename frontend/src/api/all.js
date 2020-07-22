@@ -22,3 +22,7 @@ export const telegram = new Request('/notice/telegram/')
 // chats
 export const chatgroup = new Request('/chat/chatgroup/')
 export const chatmessage = new Request('/chat/chatmessage/')
+
+// cmdbs
+export const history = new Request('/cmdb/history/')
+export const shell = new Request('/cmdb/shell/')

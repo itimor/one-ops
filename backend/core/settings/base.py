@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'tools',
     'systems',
     'notices',
-    'chats'
+    'chats',
+    'cmdbs',
 ]
 
 MIDDLEWARE = [

@@ -7,7 +7,6 @@ from systems.menus import init_menu
 
 
 class Command(BaseCommand):
-    help = '初始化工作流'
 
     def handle(self, *args, **options):
         topmenu = Menu.objects.get(name='top', code='top')

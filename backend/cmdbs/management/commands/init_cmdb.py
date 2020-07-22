@@ -10,13 +10,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         topmenu = Menu.objects.get(name='top', code='top')
-        self.stdout.write(self.style.SUCCESS('############ 初始化通知菜单 ###########'))
-        basemenu = Menu.objects.create(name='通知管理', code='notice', curl='/notice', icon='notice', sequence=2, type=1,
-                                         parent=topmenu)
-        menumodel = Menu.objects.create(name='mail通知', code='mail', curl='/mail', icon='mail', sequence=10, type=2,
+        self.stdout.write(self.style.SUCCESS('############ 初始化cmdb菜单 ###########'))
+        basemenu = Menu.objects.create(name='cmdbs', code='cmdbs', curl='/cmdbs', icon='cmdbs', sequence=5, type=1,
+                                       parent=topmenu)
+        menumodel = Menu.objects.create(name='历史命令', code='history', curl='/history', icon='history', sequence=10, type=2,
                                         parent=basemenu)
         init_menu(menumodel)
-        menumodel = Menu.objects.create(name='telegram通知', code='telegram', curl='/telegram', icon='telegram',
+        menumodel = Menu.objects.create(name='执行命令', code='shell', curl='/shell', icon='shell',
                                         sequence=20, type=2, parent=basemenu)
         init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

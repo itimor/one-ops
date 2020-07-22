@@ -48,7 +48,12 @@
         <div v-else class="chat-message">
           <div class="message">
             <header class="header">
-              <div class="friendname">{{selectName}}</div>
+              <div class="friendname">
+                {{selectName}}
+                <span>
+                  <i class="el-icon-more"></i>
+                </span>
+              </div>
             </header>
             <div class="message-wrapper" ref="list_message">
               <ul>
@@ -152,22 +157,15 @@ export default {
   },
   mounted() {
     //   this.initWebSocket();
-    // 在进入的时候 聚焦输入框
-    this.$refs.text.focus();
-  },
-  watch: {
-    // 在选择其它对话的时候 聚焦输入框
-    selectId() {
-      setTimeout(() => {
-        this.$refs.text.focus();
-      }, 0);
-    }
   },
   methods: {
     getGroupList() {
       this.listQuery.join_user = this.user_id;
       chatgroup.requestGet(this.listQuery).then(response => {
         this.group_list = response.results;
+        for (var i of this.group_list) {
+          this.initWebSocket(i.code);
+        }
       });
     },
     getMessageList(group_id) {
@@ -188,14 +186,12 @@ export default {
     },
     selectGroup(row) {
       this.message_list = [];
-      this.reconnect();
       this.room_name = row.code;
       this.selectId = row.id;
       this.selectName = row.name;
       this.message_list = row.messages;
       this.scrollToBottom();
       //this.getMessageList(row.id);
-      this.initWebSocket();
       this.temp = {
         user_id: this.user_id,
         group_id: row.id,
@@ -230,7 +226,7 @@ export default {
         this.initWebSocket();
       }, 60 * 1000);
     },
-    initWebSocket() {
+    initWebSocket(groupname) {
       //初始化weosocket
       try {
         if ("WebSocket" in window) {
@@ -240,7 +236,7 @@ export default {
             process.env.NODE_ENV === "development"
               ? "127.0.0.1:8000"
               : window.location.host;
-          const ws_url = ws_scheme + ws_host + this.ws_uri + this.room_name;
+          const ws_url = ws_scheme + ws_host + this.ws_uri + groupname;
           console.log(ws_url);
           this.socket = new WebSocket(ws_url);
         } else {
@@ -384,7 +380,7 @@ ul {
         width: 550px;
         flex: 1;
         .empty_tip {
-          color:#999;
+          color: #999;
           font-size: 26px;
           line-height: 500px;
           vertical-align: middle;
@@ -400,6 +396,16 @@ ul {
             border-bottom: 1px solid #e7e7e7;
             .friendname {
               font-size: 18px;
+              span {
+                float: right;
+                color: #999;
+                margin:0 20px;
+                i {
+                  &:hover {
+                    color: #2b2c2f;
+                  }
+                }
+              }
             }
           }
           .message-wrapper {
