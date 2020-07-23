@@ -1,9 +1,11 @@
 <template>
-  <div class="chat-app">
-    <div style="margin-top: 15px;">
-      <el-input placeholder="请输入内容" v-model="temp.cmd">
-        <el-button slot="append" icon="el-icon-open" @click="cmdrun"></el-button>
-      </el-input>
+  <div class="app-container">
+    <div class="text">
+      <div class="emoji">
+        <span>[root@localhost ~]#</span>
+        <input type="text" id="cmd" :value="temp.cmd" @keyup="onKeyup"/>
+      </div>
+      <textarea ref="text" v-model="results" readonly></textarea>
     </div>
   </div>
 </template>
@@ -15,7 +17,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "shell",
 
-  components: {  },
+  components: {},
   data() {
     return {
       listQuery: {
@@ -29,21 +31,36 @@ export default {
       ws_uri: "/ws/shell/123", // ws path
       lockReconnect: false, // 连接失败不进行重连
       maxReconnect: 5, // 最大重连次数，若连接失败
-      socket: null
+      socket: null,
+      results: []
     };
   },
   computed: {
     ...mapGetters(["user_id"])
   },
-  created() {
-  },
+  created() {},
   methods: {
-    cmdrun(){
-      const date = new Date()
-      const m = date.getMinutes() + 1 < 10 ? '0' + date.getMinutes() : date.getMinutes()
-      const s = date.getSeconds() + 1 < 10 ? '0' + date.getSeconds() : date.getSeconds()
-      const ms = date.getMilliseconds().toString().length < 3 ? '0' + date.getMilliseconds() : date.getMilliseconds()
-      const groupname = m + '-' + s + '-' + ms
+    // 按回车发送信息
+    onKeyup(e) {
+      if (e.keyCode === 13) {
+        this.cmdrun();
+      }
+    },
+    cmdrun() {
+      const date = new Date();
+      const m =
+        date.getMinutes() + 1 < 10
+          ? "0" + date.getMinutes()
+          : date.getMinutes();
+      const s =
+        date.getSeconds() + 1 < 10
+          ? "0" + date.getSeconds()
+          : date.getSeconds();
+      const ms =
+        date.getMilliseconds().toString().length < 3
+          ? "0" + date.getMilliseconds()
+          : date.getMilliseconds();
+      const groupname = m + "-" + s + "-" + ms;
       this.initWebSocket(groupname);
     },
     reconnect() {
@@ -83,6 +100,7 @@ export default {
     websocketonopen() {
       //连接建立之后执行send方法发送数据
       console.log("WebSocket连接成功", this.socket.readyState);
+      this.websocketsend()
       heartCheck.start(this.socket);
     },
     websocketonerror(e) {
@@ -117,4 +135,49 @@ export default {
 
 
 <style lang="scss" scoped>
+.text {
+  width: 70%;
+  height: 550px;
+  background: #000;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  margin: auto;
+  .emoji {
+    position: relative;
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 18px;
+    padding: 0 20px;
+    color: #07e250;
+    span{
+      position:absolute;
+      left: 0;
+      margin-left: 5px;
+    }
+    input {
+      position:absolute;
+      left: 0;
+      top: 5px;
+      background-color:transparent;
+      color: #fff;
+      left: 170px;
+      padding: 2px 10px;
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+    }
+  }
+  textarea {
+    background: #000;
+    color: #07e250;
+    padding: 5px 20px;
+    height: 500px;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+  }
+}
 </style>

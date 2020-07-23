@@ -25,4 +25,3 @@ export const chatmessage = new Request('/chat/chatmessage/')
 
 // cmdbs
 export const history = new Request('/cmdb/history/')
-export const shell = new Request('/cmdb/shell/')
