@@ -1,21 +1,29 @@
-import asyncio
+import subprocess
 import time
+import sys
 
 
-async def say_after(what):
-    print(what)
+# def run_shell(shell):
+#     cmd = subprocess.Popen(shell, stdin=subprocess.PIPE, stderr=subprocess.PIPE,
+#                            stdout=subprocess.PIPE, universal_newlines=True, shell=True, bufsize=1)
+#     # 实时输出
+#     while True:
+#         line = cmd.stdout.readline()
+#         print(line, end='')
+#         if subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
+#             break
+#     cmd.stdout.close()
+#     cmd.wait()
+#     return cmd.returncode
+
+def run_shell(shell):
+    cmd = subprocess.Popen(shell, stdin=subprocess.PIPE, stderr=sys.stderr, close_fds=True,
+                           stdout=sys.stdout, universal_newlines=True, shell=True, bufsize=1)
+    out, err = cmd.communicate()
+    errcode = cmd.returncode
+
+    return errcode, out, err
 
 
-async def main():
-    task1 = asyncio.create_task(say_after('hello'))
-
-    task2 = asyncio.create_task(say_after('world'))
-
-    await task1
-    await task2
-
-
-start = time.time()
-asyncio.run(main())
-end = time.time()
-print(end - start)
+if __name__ == '__main__':
+    print(run_shell("ping -n 10 www.gogole.com"))

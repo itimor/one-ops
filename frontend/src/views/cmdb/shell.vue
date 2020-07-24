@@ -120,7 +120,7 @@ export default {
     websocketclose(e) {
       //关闭连接
       console.log("ws连接已断开 (" + e.code + ")");
-      this.reconnect();
+      // this.reconnect();
     },
     websocketsend() {
       //数据发送
@@ -158,7 +158,7 @@ export default {
     input {
       position:absolute;
       left: 0;
-      top: 5px;
+      top: 6px;
       background-color:transparent;
       color: #fff;
       left: 170px;

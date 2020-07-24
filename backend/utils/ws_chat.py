@@ -14,7 +14,7 @@ async def send_msg(ws):
     #     return False
     # data = {"cmd": _text}
 
-    data = {"cmd": 'ping www.baidu.com'}
+    data = {"cmd": 'ping www.google.com'}
     await ws.send(json.dumps(data))
     recv_text = await ws.recv()
     print(f"{recv_text}")

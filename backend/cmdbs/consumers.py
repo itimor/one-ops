@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # author: itimor
 
+import sys
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from cmdbs.models import *
 import subprocess
+from utils.test import run_shell
 
 
 class CmdConsumer(AsyncWebsocketConsumer):
@@ -24,7 +26,6 @@ class CmdConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        print(text_data_json)
         cmd = text_data_json['cmd']
         await self.channel_layer.group_send(
             self.group_name,
@@ -35,16 +36,19 @@ class CmdConsumer(AsyncWebsocketConsumer):
         )
 
     async def cmdrun(self, event):
-        await save_cmd(event)
-        cmd = subprocess.Popen(event['cmd'], stdin=subprocess.PIPE, stderr=subprocess.PIPE,
-                               stdout=subprocess.PIPE, universal_newlines=True, shell=True, bufsize=1)
+        # await save_cmd(event)
+        cmd = subprocess.Popen(event['cmd'], stdin=subprocess.PIPE, stderr=subprocess.STDOUT,
+                               stdout=subprocess.STDOUT, universal_newlines=True, shell=True, bufsize=1)
         # 实时输出
         while True:
             line = cmd.stdout.readline()
-            print(f'{line}')
-            await self.send(text_data=json.dumps({'text': line}))
-            if subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
+            if line == '' and subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
                 break
+            print(f'{line.strip()}')
+            # sys.stdout.write(line)
+            sys.stdout.flush()
+            obj = {"text": line}
+            await self.send(text_data=json.dumps(obj))
 
 
 from asgiref.sync import sync_to_async
@@ -67,11 +71,3 @@ def save_cmd(event):
     j = JSONRenderer().render(serializer.data)
     data = json.loads(text_(j))
     return data
-
-# @sync_to_async
-# def get_all_users():
-#     return User.objects.all()
-#
-# async def foo(request):
-#     for user in await get_all_users():
-#         print(user)
