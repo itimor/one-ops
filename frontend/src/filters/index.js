@@ -79,7 +79,7 @@ export function operateTypeFilter(val) {
 }
 
 // wechat 聊天列表时间
-export function chatTime(time) {
+export function chatTime(time, option=null) {
   const d = new Date(time)
   const now = Date.now()
 

@@ -20,6 +20,7 @@
             <ul>
               <li
                 v-for="item in group_list"
+                :key="item.id"
                 class="group-list"
                 :class="{ active: item.id === selectId }"
                 @click="selectGroup(item)"
@@ -57,7 +58,7 @@
             </header>
             <div class="message-wrapper" ref="list_message">
               <ul>
-                <li v-for="item in message_list" class="message-item">
+                <li v-for="item in message_list" :key="item.id" class="message-item">
                   <div class="time">
                     <span>{{item.create_time | chatTime}}</span>
                   </div>
@@ -118,7 +119,7 @@ const heartCheck = {
         ws.close();
       }, this.timeout);
     }, this.timeout);
-  }
+  },
 };
 
 export default {
@@ -135,22 +136,22 @@ export default {
       listQuery: {
         search: "",
         join_user: "",
-        group: undefined
+        group: undefined,
       },
       temp: {
         create_user: "",
         group: "",
-        message: ""
+        message: "",
       },
       room_name: "",
       ws_uri: "/ws/chat/", // ws path
       lockReconnect: false, // 连接失败不进行重连
       maxReconnect: 5, // 最大重连次数，若连接失败
-      socket: null
+      socket: null,
     };
   },
   computed: {
-    ...mapGetters(["user_id"])
+    ...mapGetters(["user_id"]),
   },
   created() {
     this.getGroupList();
@@ -158,21 +159,24 @@ export default {
   mounted() {
     //   this.initWebSocket();
   },
+  destroyed() {
+    this.socket.close(); //离开路由之后断开websocket连接
+  },
   methods: {
     getGroupList() {
       this.listQuery.join_user = this.user_id;
-      chatgroup.requestGet(this.listQuery).then(response => {
+      chatgroup.requestGet(this.listQuery).then((response) => {
         this.group_list = response.results;
-        for (var i of this.group_list) {
-          this.initWebSocket(i.code);
-        }
+        // for (var i of this.group_list) {
+        //   this.initWebSocket(i.code);
+        // }
       });
     },
     getMessageList(group_id) {
       const data = {
-        group: group_id
+        group: group_id,
       };
-      chatmessage.requestGet(data).then(response => {
+      chatmessage.requestGet(data).then((response) => {
         this.message_list = response.results;
       });
     },
@@ -195,7 +199,7 @@ export default {
       this.temp = {
         user_id: this.user_id,
         group_id: row.id,
-        message: ""
+        message: "",
       };
     },
     // 按回车发送信息
@@ -247,6 +251,7 @@ export default {
         this.socket.onmessage = this.websocketonmessage;
         this.socket.onclose = this.websocketclose;
       } catch (e) {
+        console.log(123);
         this.reconnect();
       }
     },
@@ -277,11 +282,8 @@ export default {
     websocketsend() {
       //数据发送
       this.socket.send(JSON.stringify(this.temp));
-    }
+    },
   },
-  destroyed() {
-    this.socket.close(); //离开路由之后断开websocket连接
-  }
 };
 </script>
 
@@ -399,7 +401,7 @@ ul {
               span {
                 float: right;
                 color: #999;
-                margin:0 20px;
+                margin: 0 20px;
                 i {
                   &:hover {
                     color: #2b2c2f;
