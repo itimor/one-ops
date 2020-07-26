@@ -37,8 +37,8 @@ class CmdConsumer(AsyncWebsocketConsumer):
 
     async def cmdrun(self, event):
         # await save_cmd(event)
-        cmd = subprocess.Popen(event['cmd'], stdin=subprocess.PIPE, stderr=subprocess.STDOUT,
-                               stdout=subprocess.STDOUT, universal_newlines=True, shell=True, bufsize=1)
+        cmd = subprocess.Popen(event['cmd'], stdin=subprocess.PIPE, stderr=subprocess.PIPE,
+                               stdout=subprocess.PIPE, universal_newlines=True, shell=True, bufsize=1)
         # 实时输出
         while True:
             line = cmd.stdout.readline()
@@ -47,8 +47,12 @@ class CmdConsumer(AsyncWebsocketConsumer):
             print(f'{line.strip()}')
             # sys.stdout.write(line)
             sys.stdout.flush()
-            obj = {"text": line}
+            obj = {"text": line.strip()}
             await self.send(text_data=json.dumps(obj))
+
+    async def send_result(self, event):
+        obj = {"text": event['cmd']}
+        await self.send(text_data=json.dumps(obj))
 
 
 from asgiref.sync import sync_to_async

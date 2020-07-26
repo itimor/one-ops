@@ -3,9 +3,9 @@
     <div class="text">
       <div class="emoji">
         <span>[root@localhost ~]#</span>
-        <input type="text" id="cmd" :value="temp.cmd" @keyup="onKeyup"/>
+        <input type="text" v-model="temp.cmd"  @keyup="onKeyup" placeholder="输入命令">
       </div>
-      <textarea ref="text" v-model="results" readonly></textarea>
+      <p v-for="item in results" :key="item">{{item}}</p>
     </div>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default {
       temp: {
         cmd: "ping www.baidu.com"
       },
-      ws_uri: "/ws/shell/123", // ws path
+      ws_uri: "/ws/shell/", // ws path
       lockReconnect: false, // 连接失败不进行重连
       maxReconnect: 5, // 最大重连次数，若连接失败
       socket: null,
@@ -60,7 +60,9 @@ export default {
         date.getMilliseconds().toString().length < 3
           ? "0" + date.getMilliseconds()
           : date.getMilliseconds();
-      const groupname = m + "-" + s + "-" + ms;
+      //const groupname = m + "-" + s + "-" + ms;
+      this.results = []
+      const groupname = 'aaa'
       this.initWebSocket(groupname);
     },
     reconnect() {
@@ -101,7 +103,6 @@ export default {
       //连接建立之后执行send方法发送数据
       console.log("WebSocket连接成功", this.socket.readyState);
       this.websocketsend()
-      heartCheck.start(this.socket);
     },
     websocketonerror(e) {
       //连接建立失败重连
@@ -111,11 +112,10 @@ export default {
     websocketonmessage(e) {
       //数据接收
       const data = JSON.parse(e.data);
-      this.message_list.push(data);
+      this.results.push(data['text']);
       // console.log("得到响应", data);
       // 消息获取成功，重置心跳
       this.scrollToBottom();
-      heartCheck.start(this.socket);
     },
     websocketclose(e) {
       //关闭连接
@@ -169,11 +169,9 @@ export default {
       resize: none;
     }
   }
-  textarea {
-    background: #000;
+  p {
     color: #07e250;
-    padding: 5px 20px;
-    height: 500px;
+    padding: 2px 10px;
     width: 100%;
     border: none;
     outline: none;
