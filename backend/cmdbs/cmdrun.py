@@ -19,7 +19,7 @@ def run_shell(shell):
     while True:
         line = cmd.stdout.readline()
         print(line, end='')
-        if subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
+        if line == '' and subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
             break
 
     return cmd.returncode

@@ -42,13 +42,14 @@ class CmdConsumer(AsyncWebsocketConsumer):
         # 实时输出
         while True:
             line = cmd.stdout.readline()
+            print(line.strip())
             if line == '' and subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
                 break
-            print(f'{line.strip()}')
             # sys.stdout.write(line)
             sys.stdout.flush()
-            obj = {"text": line.strip()}
-            await self.send(text_data=json.dumps(obj))
+            if line != '':
+                obj = {"text": line.strip()}
+                await self.send(text_data=json.dumps(obj))
 
     async def send_result(self, event):
         obj = {"text": event['cmd']}

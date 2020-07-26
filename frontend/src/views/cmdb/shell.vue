@@ -60,9 +60,8 @@ export default {
         date.getMilliseconds().toString().length < 3
           ? "0" + date.getMilliseconds()
           : date.getMilliseconds();
-      //const groupname = m + "-" + s + "-" + ms;
+      const groupname = m + "-" + s + "-" + ms;
       this.results = []
-      const groupname = 'aaa'
       this.initWebSocket(groupname);
     },
     reconnect() {
@@ -142,6 +141,8 @@ export default {
   border: 1px solid #e6e6e6;
   border-radius: 10px;
   margin: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   .emoji {
     position: relative;
     width: 80%;
