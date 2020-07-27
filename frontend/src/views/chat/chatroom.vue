@@ -167,9 +167,9 @@ export default {
       this.listQuery.join_user = this.user_id;
       chatgroup.requestGet(this.listQuery).then((response) => {
         this.group_list = response.results;
-        // for (var i of this.group_list) {
-        //   this.initWebSocket(i.code);
-        // }
+        for (var i of this.group_list) {
+          this.initWebSocket(i.code);
+        }
       });
     },
     getMessageList(group_id) {
