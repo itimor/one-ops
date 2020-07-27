@@ -10,3 +10,24 @@ class HistoryViewSet(ModelViewSet):
     serializer_class = HistorySerializer
     search_fields = ['cmd']
     filter_fields = ['num']
+
+
+class IdcViewSet(ModelViewSet):
+    queryset = Idc.objects.all()
+    serializer_class = IdcSerializer
+    search_fields = ['name']
+    filter_fields = ['name']
+
+
+class HostGroupViewSet(ModelViewSet):
+    queryset = HostGroup.objects.all()
+    serializer_class = HostGroupSerializer
+    search_fields = ['name']
+    filter_fields = ['name']
+
+
+class HostViewSet(ModelViewSet):
+    queryset = Host.objects.all()
+    serializer_class = HostSerializer
+    search_fields = ['hostname', 'hostname']
+    filter_fields = ['hostname', 'hostname']

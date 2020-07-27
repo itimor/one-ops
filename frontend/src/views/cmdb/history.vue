@@ -27,7 +27,7 @@
       @sort-change="handleSortChange"
     >
       <el-table-column label="命令" prop="cmd"></el-table-column>
-      <el-table-column label="使用次数" prop="remote_ip"></el-table-column>
+      <el-table-column label="使用次数" prop="num"></el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
       <el-table-column label="上次使用时间" prop="update_time"></el-table-column>
     </el-table>

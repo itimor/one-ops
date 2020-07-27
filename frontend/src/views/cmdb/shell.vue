@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <div class="text">
+    <div class="text" ref="list_message">
       <div class="emoji">
         <span>[root@localhost ~]#</span>
-        <input type="text" v-model="temp.cmd"  @keyup="onKeyup" placeholder="输入命令">
+        <input type="text" v-model="temp.cmd" @keyup="onKeyup" placeholder="输入命令" />
       </div>
       <p v-for="item in results" :key="item">{{item}}</p>
     </div>
@@ -23,23 +23,31 @@ export default {
       listQuery: {
         search: "",
         join_user: "",
-        group: undefined
+        group: undefined,
       },
       temp: {
-        cmd: "ping www.baidu.com"
+        cmd: "ping www.baidu.com",
       },
       ws_uri: "/ws/shell/", // ws path
       lockReconnect: false, // 连接失败不进行重连
       maxReconnect: 5, // 最大重连次数，若连接失败
       socket: null,
-      results: []
+      results: [],
     };
   },
   computed: {
-    ...mapGetters(["user_id"])
+    ...mapGetters(["user_id"]),
   },
   created() {},
   methods: {
+    scrollToBottom() {
+      //  在页面加载时让信息滚动到最下面
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.$refs.list_message.scrollTop = this.$refs.list_message.scrollHeight;
+        }, 0);
+      });
+    },
     // 按回车发送信息
     onKeyup(e) {
       if (e.keyCode === 13) {
@@ -61,7 +69,7 @@ export default {
           ? "0" + date.getMilliseconds()
           : date.getMilliseconds();
       const groupname = m + "-" + s + "-" + ms;
-      this.results = []
+      this.results = [];
       this.initWebSocket(groupname);
     },
     reconnect() {
@@ -101,7 +109,7 @@ export default {
     websocketonopen() {
       //连接建立之后执行send方法发送数据
       console.log("WebSocket连接成功", this.socket.readyState);
-      this.websocketsend()
+      this.websocketsend();
     },
     websocketonerror(e) {
       //连接建立失败重连
@@ -111,7 +119,7 @@ export default {
     websocketonmessage(e) {
       //数据接收
       const data = JSON.parse(e.data);
-      this.results.push(data['text']);
+      this.results.push(data["text"]);
       // console.log("得到响应", data);
       // 消息获取成功，重置心跳
       this.scrollToBottom();
@@ -124,11 +132,11 @@ export default {
     websocketsend() {
       //数据发送
       this.socket.send(JSON.stringify(this.temp));
-    }
+    },
   },
   destroyed() {
     this.socket.close(); //离开路由之后断开websocket连接
-  }
+  },
 };
 </script>
 
@@ -151,16 +159,16 @@ export default {
     font-size: 18px;
     padding: 0 20px;
     color: #07e250;
-    span{
-      position:absolute;
+    span {
+      position: absolute;
       left: 0;
       margin-left: 5px;
     }
     input {
-      position:absolute;
+      position: absolute;
       left: 0;
       top: 6px;
-      background-color:transparent;
+      background-color: transparent;
       color: #fff;
       left: 170px;
       padding: 2px 10px;
