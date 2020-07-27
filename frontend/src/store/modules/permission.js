@@ -186,7 +186,10 @@ export const componentsMap = {
   chatmessage: () => import('@/views/chat/chatmessage'),
   chatroom: () => import('@/views/chat/chatroom'),
 
-    // cmdb
-    history: () => import('@/views/cmdb/history'),
-    shell: () => import('@/views/cmdb/shell'),
+  // cmdb
+  history: () => import('@/views/cmdb/history'),
+  shell: () => import('@/views/cmdb/shell'),
+  idc: () => import('@/views/cmdb/idc'),
+  hostgroup: () => import('@/views/cmdb/hostgroup'),
+  host: () => import('@/views/cmdb/host'),
 }

@@ -23,6 +23,13 @@ class HostGroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class HostReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Host
+        fields = '__all__'
+        depth = 1
+
+
 class HostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Host

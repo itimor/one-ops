@@ -79,7 +79,7 @@ export function operateTypeFilter(val) {
 }
 
 // wechat 聊天列表时间
-export function chatTime(time, option=null) {
+export function chatTime(time, option = null) {
   const d = new Date(time)
   const now = Date.now()
 
@@ -100,12 +100,12 @@ export function chatTime(time, option=null) {
   } else {
     return (
       d.getFullYear() +
-      '年'+
+      '年' +
       d.getMonth() +
       1 +
       '月' +
       d.getDate() +
-      '日' 
+      '日'
     )
   }
 }
@@ -113,4 +113,27 @@ export function chatTime(time, option=null) {
 // 取第一个字母并大写
 export function AvatarFilter(val) {
   return val.substr(0, 1).toUpperCase()
+}
+
+// 按钮
+export function ASSET_STATUSFilter(val) {
+  const Map = {
+    1: '使用中',
+    2: '未使用',
+    3: '故障',
+    4: '报废'
+  }
+  return Map[val]
+}
+
+// 按钮
+export function ASSET_TYPEFilter(val) {
+  const Map = {
+    1: "物理机",
+    2: "虚拟机",
+    3: "容器",
+    4: "网络设备",
+    5: "其他设备"
+  }
+  return Map[val]
 }

@@ -23,9 +23,9 @@ export default {
     cmdb: 'cmdbManager',
     history: 'history',
     shell: 'shell',
-    s_ticket: 's_ticket',
-    my_ticket: 'my_ticket',
-    todo_ticket: 'todo_ticket',
+    idc: 'idc',
+    hostgroup: 'hostgroup',
+    host: 'host',
     all_ticket: 'all_ticket',
   },
   navbar: {

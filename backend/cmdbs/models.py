@@ -17,11 +17,11 @@ class History(BaseModel):
 class Idc(BaseModel):
     name = models.CharField(max_length=32, unique=True, verbose_name="名称")
     code = models.CharField(max_length=32, unique=True, verbose_name='代码')
-    country = models.CharField(max_length=32, null=True, blank=True, verbose_name="地址")
-    area = models.CharField(max_length=32, null=True, blank=True, verbose_name="地址")
-    addr = models.CharField(max_length=32, null=True, blank=True, verbose_name="地址")
+    country = models.CharField(max_length=32, null=True, blank=True, verbose_name="国家")
+    area = models.CharField(max_length=32, null=True, blank=True, verbose_name="区域")
+    addr = models.CharField(max_length=32, null=True, blank=True, verbose_name="详细地址地址")
     user = models.CharField(max_length=30, null=True, blank=True, verbose_name="负责人")
-    tel = models.CharField(max_length=32, null=True, blank=True, verbose_name="负责人电话")
+    tel = models.CharField(max_length=32, null=True, blank=True, verbose_name="联系电话")
 
     def __str__(self):
         return self.name

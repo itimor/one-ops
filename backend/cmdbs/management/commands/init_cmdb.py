@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         topmenu = Menu.objects.get(name='top', code='top')
         self.stdout.write(self.style.SUCCESS('############ 初始化cmdb菜单 ###########'))
-        basemenu = Menu.objects.create(name='cmdbs', code='cmdbs', curl='/cmdbs', icon='cmdbs', sequence=5, type=1,
+        basemenu = Menu.objects.create(name='资产管理', code='cmdb', curl='/cmdb', icon='cmdb', sequence=5, type=1,
                                        parent=topmenu)
         menumodel = Menu.objects.create(name='机房', code='idc', curl='/idc', icon='idc', sequence=10, type=2,
                                         parent=basemenu)
