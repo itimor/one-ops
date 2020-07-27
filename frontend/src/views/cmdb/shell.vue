@@ -149,6 +149,7 @@ export default {
   border: 1px solid #e6e6e6;
   border-radius: 10px;
   margin: auto;
+  padding: 10px 20px;
   overflow-x: hidden;
   overflow-y: auto;
   .emoji {
