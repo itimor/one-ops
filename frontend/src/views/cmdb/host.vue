@@ -330,7 +330,8 @@ export default {
                 type: "success",
                 duration: 2000,
               });
-              this.getList();
+              this.temp.id = response.data.id;
+              this.list.unshift(this.temp);
             })
             .catch(() => {
               this.loading = false;
@@ -341,7 +342,7 @@ export default {
     handleUpdate(row) {
       this.temp = Object.assign({}, row, {
         idc: row.idc.id,
-        groups: row.groups.map(a => a.id),
+        groups: row.groups.map((a) => a.id),
       });
       this.dialogStatus = "update";
       this.dialogFormVisible = true;

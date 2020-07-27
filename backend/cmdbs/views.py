@@ -6,7 +6,7 @@ from common.views import ModelViewSet, JsonResponse
 
 
 class HistoryViewSet(ModelViewSet):
-    queryset = History.objects.all()
+    queryset = History.objects.all().order_by('-num')
     serializer_class = HistorySerializer
     search_fields = ['cmd']
     filter_fields = ['num']

@@ -21,7 +21,6 @@ export default {
     chatmessage: 'chatmessage',
     chatroom: 'chatroom',
     cmdb: 'cmdbManager',
-    history: 'history',
     shell: 'shell',
     idc: 'idc',
     hostgroup: 'hostgroup',

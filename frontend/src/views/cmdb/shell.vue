@@ -1,11 +1,29 @@
 <template>
   <div class="app-container">
-    <div class="text" ref="list_message">
-      <div class="emoji">
-        <span>[root@localhost ~]#</span>
-        <input type="text" v-model="temp.cmd" @keyup="onKeyup" placeholder="输入命令" />
-      </div>
-      <p v-for="item in results" :key="item">{{item}}</p>
+    <div class="cmd-container">
+      <el-row :gutter="20">
+        <el-col :span="18">
+          <div class="text" ref="list_message">
+            <div class="emoji">
+              <span>[root@localhost ~]#</span>
+              <input type="text" v-model="temp.cmd" @keyup="onKeyup" placeholder="输入命令" />
+            </div>
+            <p v-for="item in results" :key="item">{{item}}</p>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <ul class="infinite-list">
+            <li
+              v-for="item in history_list"
+              :key="item.id"
+              class="infinite-list-item"
+              @click="changeCdm(item.cmd)"
+            >
+              <a>{{ item.cmd }}</a>
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -33,13 +51,28 @@ export default {
       maxReconnect: 5, // 最大重连次数，若连接失败
       socket: null,
       results: [],
+      history_list: [],
+      hostory_listQuery: {
+        offset: 1,
+        limit: 10,
+      },
     };
   },
   computed: {
     ...mapGetters(["user_id"]),
   },
-  created() {},
+  created() {
+    this.getList();
+  },
   methods: {
+    getList() {
+      history.requestGet().then((response) => {
+        this.history_list = response.results;
+      });
+    },
+    changeCdm(val) {
+      this.temp.cmd = val;
+    },
     scrollToBottom() {
       //  在页面加载时让信息滚动到最下面
       this.$nextTick(() => {
@@ -128,6 +161,7 @@ export default {
       //关闭连接
       console.log("ws连接已断开 (" + e.code + ")");
       // this.reconnect();
+      this.getList();
     },
     websocketsend() {
       //数据发送
@@ -142,50 +176,74 @@ export default {
 
 
 <style lang="scss" scoped>
-.text {
-  width: 70%;
-  height: 550px;
-  background: #000;
-  border: 1px solid #e6e6e6;
-  border-radius: 10px;
-  margin: auto;
-  padding: 10px 20px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  .emoji {
-    position: relative;
-    width: 80%;
-    height: 40px;
-    line-height: 40px;
-    font-size: 18px;
-    padding: 0 20px;
-    color: #07e250;
-    span {
-      position: absolute;
-      left: 0;
-      margin-left: 5px;
+.cmd-container {
+  .infinite-list {
+    max-height: 600px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    overflow: auto;
+    ::-webkit-scrollbar {
+      width: 0px;
     }
-    input {
-      position: absolute;
-      left: 0;
-      top: 6px;
+    ::-webkit-scrollbar-track-piece {
       background-color: transparent;
-      color: #fff;
-      left: 170px;
+      -webkit-border-radius: 6px;
+    }
+    .infinite-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 38px;
+      background: #ccdcec;
+      margin: 10px;
+      color: #429bf3;
+      border-radius: 10px;
+    }
+  }
+  .text {
+    background: #000;
+    min-height: 600px;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 10px 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    .emoji {
+      position: relative;
+      width: 80%;
+      height: 40px;
+      line-height: 40px;
+      font-size: 18px;
+      padding: 0 20px;
+      color: #07e250;
+      span {
+        position: absolute;
+        left: 0;
+        margin-left: 5px;
+      }
+      input {
+        position: absolute;
+        left: 0;
+        top: 6px;
+        background-color: transparent;
+        color: #fff;
+        left: 170px;
+        padding: 2px 10px;
+        width: 100%;
+        border: none;
+        outline: none;
+        resize: none;
+      }
+    }
+    p {
+      color: #07e250;
       padding: 2px 10px;
       width: 100%;
       border: none;
       outline: none;
       resize: none;
     }
-  }
-  p {
-    color: #07e250;
-    padding: 2px 10px;
-    width: 100%;
-    border: none;
-    outline: none;
-    resize: none;
   }
 }
 </style>

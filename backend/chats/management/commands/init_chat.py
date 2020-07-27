@@ -13,7 +13,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('############ 初始化聊天菜单 ###########'))
         basemenu = Menu.objects.create(name='聊天管理', code='chat', curl='/chat', icon='chat', sequence=4, type=1,
                                          parent=topmenu)
-        menumodel = Menu.objects.create(name='群组管理', code='chatgroup', curl='/chatgroup', icon='chatgroup', sequence=10, type=2,
+        menumodel = Menu.objects.create(name='群组管理', code='chatgroup', curl='/chatgroup', icon='group', sequence=10, type=2,
                                         parent=basemenu)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='消息管理', code='chatmessage', curl='/chatmessage', icon='message',

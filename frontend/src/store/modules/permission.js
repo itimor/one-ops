@@ -187,7 +187,6 @@ export const componentsMap = {
   chatroom: () => import('@/views/chat/chatroom'),
 
   // cmdb
-  history: () => import('@/views/cmdb/history'),
   shell: () => import('@/views/cmdb/shell'),
   idc: () => import('@/views/cmdb/idc'),
   hostgroup: () => import('@/views/cmdb/hostgroup'),
