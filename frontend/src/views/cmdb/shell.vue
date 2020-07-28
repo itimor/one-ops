@@ -176,74 +176,74 @@ export default {
 
 
 <style lang="scss" scoped>
-.cmd-container {
-  .infinite-list {
-    max-height: 600px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    overflow: auto;
-    ::-webkit-scrollbar {
-      width: 0px;
-    }
-    ::-webkit-scrollbar-track-piece {
-      background-color: transparent;
-      -webkit-border-radius: 6px;
-    }
-    .infinite-list-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 38px;
-      background: #ccdcec;
-      margin: 10px;
-      color: #429bf3;
-      border-radius: 10px;
-    }
+.infinite-list {
+  max-height: 600px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  &::-webkit-scrollbar {
+    width: 0px;
   }
-  .text {
-    background: #000;
-    min-height: 600px;
-    border: 1px solid #e6e6e6;
+  .infinite-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    background: #ccdcec;
+    margin: 10px;
+    color: #429bf3;
     border-radius: 10px;
-    padding: 10px 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    .emoji {
-      position: relative;
-      width: 80%;
-      height: 40px;
-      line-height: 40px;
-      font-size: 18px;
-      padding: 0 20px;
-      color: #07e250;
-      span {
-        position: absolute;
-        left: 0;
-        margin-left: 5px;
-      }
-      input {
-        position: absolute;
-        left: 0;
-        top: 6px;
-        background-color: transparent;
-        color: #fff;
-        left: 170px;
-        padding: 2px 10px;
-        width: 100%;
-        border: none;
-        outline: none;
-        resize: none;
-      }
+  }
+}
+.text {
+  background: #000;
+  height: 600px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 10px 20px;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
+  .emoji {
+    position: relative;
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 18px;
+    padding: 0 20px;
+    color: #07e250;
+    span {
+      position: absolute;
+      left: 0;
+      margin-left: 5px;
     }
-    p {
-      color: #07e250;
+    input {
+      position: absolute;
+      left: 0;
+      top: 6px;
+      background-color: transparent;
+      color: #fff;
+      left: 170px;
       padding: 2px 10px;
       width: 100%;
       border: none;
       outline: none;
       resize: none;
     }
+  }
+  p {
+    color: #07e250;
+    padding: 2px 10px;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
   }
 }
 </style>
