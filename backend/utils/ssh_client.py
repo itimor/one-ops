@@ -16,7 +16,8 @@ class SSHConnection(object):
     def run(self):
         self.connect()  # 连接远程服务器
         self.upload('index.py', '/tmp/1.py')  # 将本地的db.py文件上传到远端服务器的/tmp/目录下并改名为1.py
-        self.cmd('ls -l /tmp/1.py')  # 执行df 命令
+        self.cmd('ls -l /tmp/1.py')  # 执行命令
+        self.close()
 
     def connect(self):
         transport = paramiko.Transport((self.host, self.port))
@@ -34,20 +35,24 @@ class SSHConnection(object):
         ssh = paramiko.SSHClient()
         ssh._transport = self.__transport
         # 执行命令
+        command = '{} {}'.format(command, '2>&1')
         stdin, stdout, stderr = ssh.exec_command(command)
         # 获取命令结果
         # result = stdout.read()
-        # 循环发送消息
-        while True:
-            nextline = stdout.readline().strip()  # 读取脚本输出内容
-            print(nextline)
-            # 判断消息为空时,退出循环
-            if not nextline:
-                break
+        return stdout
 
 
 if __name__ == '__main__':
     ssh = SSHConnection()
-    ssh.run()
-    ssh.cmd('ping -c 10 www.google.com')
+    # ssh.run()
+    r = ssh.cmd('ping -c 10 www.google.com')
+    # 循环发送消息
+    while True:
+        nextline = r.readline().strip()  # 读取脚本输出内容
+        print(nextline)
+        # 判断消息为空时,退出循环
+        if not nextline:
+            break
     ssh.close()  # 关闭连接
+
+
