@@ -44,10 +44,11 @@ class HostGroup(BaseModel):
 
 
 ASSET_STATUS = {
-    1: '使用中',
+    1: '已使用',
     2: '未使用',
-    3: '故障',
-    4: '报废'
+    3: '已下线',
+    4: '故障',
+    5: '销毁'
 }
 
 ASSET_TYPE = {

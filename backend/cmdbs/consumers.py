@@ -5,7 +5,7 @@ import sys
 import json
 from channels.generic.websocket import WebsocketConsumer
 from cmdbs.models import *
-import subprocess
+from cmdbs.cmdrun import run_shell
 
 
 class CmdConsumer(WebsocketConsumer):
@@ -18,12 +18,12 @@ class CmdConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         save_cmd(text_data_json)
-        cmd = subprocess.Popen(text_data_json['cmd'], stdin=subprocess.PIPE, stderr=subprocess.PIPE,
-                               stdout=subprocess.PIPE, universal_newlines=True, shell=True, bufsize=1)
+        a = run_shell(text_data_json['cmd'])
         # 实时输出
         while True:
-            line = cmd.stdout.readline()
-            if line == '' and subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
+            line = a.stdout.readline()
+            # print(line, end='')
+            if line == '' or a.poll() is not None:  # 判断子进程是否结束
                 break
             sys.stdout.flush()
             if line != '':

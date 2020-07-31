@@ -11,20 +11,19 @@ import sys
 #     cmd.communicate()
 #     return cmd.returncode
 
-
 def run_shell(shell):
+    shell = '{} {}'.format(shell, '2>&1')
     cmd = subprocess.Popen(shell, stdin=subprocess.PIPE, stderr=subprocess.PIPE,
                            stdout=subprocess.PIPE, universal_newlines=True, shell=True, bufsize=1)
-    # 实时输出
-    while True:
-        line = cmd.stdout.readline()
-        print(line, end='')
-        if line == '' and subprocess.Popen.poll(cmd) == 0:  # 判断子进程是否结束
-            break
 
-    return cmd.returncode
+    return cmd
 
 
 if __name__ == '__main__':
-    cmd = "ping www.baidu.com"
-    print(run_shell(cmd))
+    cmd = "ping www.google.com"
+    a = run_shell(cmd)
+    while True:
+        line = a.stdout.readline()
+        print(line, end='')
+        if line == '' or a.poll() is not None:  # 判断子进程是否结束
+            break
