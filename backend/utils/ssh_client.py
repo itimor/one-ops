@@ -13,12 +13,6 @@ class SSHConnection(object):
         self.pwd = pwd
         self.__transport = self.connect()
 
-    def run(self):
-        self.connect()  # 连接远程服务器
-        self.upload('index.py', '/tmp/1.py')  # 将本地的db.py文件上传到远端服务器的/tmp/目录下并改名为1.py
-        self.cmd('ls -l /tmp/1.py')  # 执行命令
-        self.close()
-
     def connect(self):
         transport = paramiko.Transport((self.host, self.port))
         transport.connect(username=self.username, password=self.pwd)
@@ -41,6 +35,11 @@ class SSHConnection(object):
         # result = stdout.read()
         return stdout
 
+    def run(self):
+        self.upload('index.py', '/tmp/1.py')  # 将本地的db.py文件上传到远端服务器的/tmp/目录下并改名为1.py
+        self.cmd('ls -l /tmp/1.py')  # 执行命令
+        self.close()
+
 
 if __name__ == '__main__':
     ssh = SSHConnection()
@@ -54,5 +53,3 @@ if __name__ == '__main__':
         if not nextline:
             break
     ssh.close()  # 关闭连接
-
-
