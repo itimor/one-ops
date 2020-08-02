@@ -49,29 +49,29 @@ def init_host(log_path, log_name, hosts, monitor_node):
 @shared_task
 def tailf(filename, channel_name):
     channel_layer = get_channel_layer()
-    while True:
-        sleep(1)
-        async_to_sync(channel_layer.send)(
-            channel_name,
-            {
-                "type": "send_log",
-                "message": "微信公众号【运维咖啡吧】原创 版权所有 " + str(1)
-            }
-        )
-    # try:
-    #     with open(filename) as f:
-    #         f.seek(0, 2)
-    #         while True:
-    #             line = f.readline()
-    #             if line:
-    #                 async_to_sync(channel_layer.send)(
-    #                     channel_name,
-    #                     {
-    #                         "type": "send_log",
-    #                         "message": "微信公众号【运维咖啡吧】原创 版权所有 " + str(line)
-    #                     }
-    #                 )
-    #             else:
-    #                 sleep(0.5)
-    # except Exception as e:
-    #     print(e)
+    # while True:
+    #     sleep(1)
+    #     async_to_sync(channel_layer.send)(
+    #         channel_name,
+    #         {
+    #             "type": "send_log",
+    #             "message": "微信公众号【运维咖啡吧】原创 版权所有 " + str(1)
+    #         }
+    #     )
+    try:
+        with open(filename) as f:
+            f.seek(0, 2)
+            while True:
+                line = f.readline()
+                if line:
+                    async_to_sync(channel_layer.send)(
+                        channel_name,
+                        {
+                            "type": "send_log",
+                            "message": line
+                        }
+                    )
+                else:
+                    sleep(0.5)
+    except Exception as e:
+        print(e)
