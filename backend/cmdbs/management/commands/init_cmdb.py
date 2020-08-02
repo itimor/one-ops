@@ -25,4 +25,7 @@ class Command(BaseCommand):
         menumodel = Menu.objects.create(name='执行命令', code='shell', curl='/shell', icon='shell',
                                         sequence=40, type=2, parent=basemenu)
         init_menu(menumodel)
+        menumodel = Menu.objects.create(name='初始化主机', code='inithost', curl='/inithost', icon='inithost',
+                                        sequence=50, type=2, parent=basemenu)
+        init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

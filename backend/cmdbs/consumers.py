@@ -4,8 +4,26 @@
 import sys
 import json
 from channels.generic.websocket import WebsocketConsumer
-from cmdbs.models import *
 from cmdbs.cmdrun import run_shell
+from cmdbs.serializers import *
+from rest_framework.renderers import JSONRenderer
+from utils.compatibility import text_
+from celery_tasks.tasks import tailf
+
+
+def save_cmd(event):
+    cmd = event['cmd']
+    try:
+        obj = History.objects.get(cmd=cmd)
+        obj.num += 1
+        obj.save()
+    except:
+        obj = History.objects.create(cmd=cmd, num=1)
+
+    serializer = HistorySerializer(obj)
+    j = JSONRenderer().render(serializer.data)
+    data = json.loads(text_(j))
+    return data
 
 
 class CmdConsumer(WebsocketConsumer):
@@ -31,21 +49,20 @@ class CmdConsumer(WebsocketConsumer):
                 self.send(text_data=json.dumps(obj))
 
 
-from cmdbs.serializers import *
-from rest_framework.renderers import JSONRenderer
-from utils.compatibility import text_
+class TailfConsumer(WebsocketConsumer):
+    def connect(self):
+        self.filename = self.scope["url_route"]["kwargs"]["filename"]
+        self.result = tailf.delay(self.filename, self.channel_name)
+        print('connect:', self.channel_name, self.result.id)
+        self.accept()
 
+    def disconnect(self, close_code):
+        # 中止执行中的Task
+        self.result.revoke(terminate=True)
+        print('disconnect:', self.filename, self.channel_name)
+        self.close()
 
-def save_cmd(event):
-    cmd = event['cmd']
-    try:
-        obj = History.objects.get(cmd=cmd)
-        obj.num += 1
-        obj.save()
-    except:
-        obj = History.objects.create(cmd=cmd, num=1)
-
-    serializer = HistorySerializer(obj)
-    j = JSONRenderer().render(serializer.data)
-    data = json.loads(text_(j))
-    return data
+    def send_log(self, event):
+        self.send(text_data=json.dumps({
+            "message": event["message"]
+        }))

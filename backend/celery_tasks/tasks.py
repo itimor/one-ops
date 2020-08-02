@@ -3,6 +3,9 @@
 
 from celery import shared_task
 from time import sleep
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from django.conf import settings
 
 
 @shared_task
@@ -33,3 +36,25 @@ def send_telegram(token, chat_id, content):
     import telegram
     bot = telegram.Bot(token=token)
     bot.send_message(chat_id=chat_id, text=content)
+
+
+@shared_task
+def tailf(filename, channel_name):
+    channel_layer = get_channel_layer()
+    try:
+        with open(filename) as f:
+            f.seek(0, 2)
+            while True:
+                line = f.readline()
+                if line:
+                    async_to_sync(channel_layer.send)(
+                        channel_name,
+                        {
+                            "type": "send_log",
+                            "message": "微信公众号【运维咖啡吧】原创 版权所有 " + str(line)
+                        }
+                    )
+                else:
+                    sleep(0.5)
+    except Exception as e:
+        print(e)

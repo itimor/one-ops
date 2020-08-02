@@ -29,8 +29,8 @@ class HostGroupViewSet(ModelViewSet):
 class HostViewSet(ModelViewSet):
     queryset = Host.objects.all()
     serializer_class = HostSerializer
-    search_fields = ['hostname', 'hostname']
-    filter_fields = ['hostname', 'hostname']
+    search_fields = ['hostname', 'ip']
+    filter_fields = ['hostname', 'status', 'groups', 'idc']
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve'] or self.resultData:

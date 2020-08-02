@@ -44,11 +44,11 @@ class HostGroup(BaseModel):
 
 
 ASSET_STATUS = {
+    0: '待初始化',
     1: '已使用',
     2: '未使用',
-    3: '已下线',
-    4: '故障',
-    5: '销毁'
+    3: '待下线',
+    4: '已下线',
 }
 
 ASSET_TYPE = {
@@ -71,7 +71,7 @@ class Host(BaseModel):
     groups = models.ManyToManyField(HostGroup, blank=True, related_name='host_group', verbose_name=u'主机组')
     idc = models.ForeignKey(Idc, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="机房")
     asset_type = models.CharField(choices=tuple(ASSET_TYPE.items()), default=2, max_length=30, verbose_name="设备类型")
-    status = models.CharField(choices=tuple(ASSET_STATUS.items()), default=2, max_length=30, verbose_name="设备状态")
+    status = models.CharField(choices=tuple(ASSET_STATUS.items()), default=0, max_length=30, verbose_name="设备状态")
     os = models.CharField(max_length=30, null=True, blank=True, verbose_name="操作系统")
     cpu = models.CharField(max_length=100, null=True, blank=True, verbose_name="CPU信息")
     memory = models.CharField(max_length=30, null=True, blank=True, verbose_name="内存信息")

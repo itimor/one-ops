@@ -225,10 +225,11 @@ export default {
       group_list: [],
       idc_list: [],
       ASSET_STATUS: {
-        1: "使用中",
+        0: "待初始化",
+        1: "已使用",
         2: "未使用",
-        3: "故障",
-        4: "报废",
+        3: "待下线",
+        4: "已下线",
       },
       ASSET_TYPE: {
         1: "物理机",
@@ -330,8 +331,7 @@ export default {
                 type: "success",
                 duration: 2000,
               });
-              this.temp.id = response.data.id;
-              this.list.unshift(this.temp);
+              this.getList();
             })
             .catch(() => {
               this.loading = false;

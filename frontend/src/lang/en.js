@@ -25,7 +25,7 @@ export default {
     idc: 'idc',
     hostgroup: 'hostgroup',
     host: 'host',
-    all_ticket: 'all_ticket',
+    inithost: 'inithost',
   },
   navbar: {
     logOut: 'Log Out',

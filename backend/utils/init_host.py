@@ -2,40 +2,57 @@
 # author: itimor
 
 from ssh_client import SSHConnection
+from init_log import Log
 import sys
 import os
 
+Logger = Log()
+log = Logger.Logger
 
-def gogobar():
+
+def gogobar(hostname, ip, monitor_node, init_log):
+    user = 'manager'
     # 新建管理用户，并传输秘钥
-    ssh.cmd('useradd manager')
-    ssh.cmd('mkdir /home/manager/.ssh')
-    ssh.upload('/data/scripts/manager_authorized_keys', '/home/manager/.ssh/authorized_keys')
-    ssh.cmd('chmod -R 700 /home/manager/.ssh && chown manager.manager -R /home/manager/.ssh && chmod -R 600 /home/manager/.ssh/authorized_keys')
-    ssh.cmd("grep manager /etc/sudoers || echo '%manager    ALL=(ALL)       NOPASSWD: ALL,!/bin/su,!/usr/bin/passwd' >>/etc/sudoers")
-
-    # 新建查看用户，并传输秘钥
-    ssh.cmd('useradd view')
-    ssh.cmd('mkdir /home/view/.ssh')
-    ssh.upload('/data/scripts/view_authorized_keys', '/home/view/.ssh/authorized_keys')
-    ssh.cmd('chmod -R 700 /home/view/.ssh && chown view.view -R /home/view/.ssh && chmod -R 600 /home/view/.ssh/authorized_keys')
-
-    # 传递初始化脚本
-    ssh.upload('/data/scripts/os_init.sh', '/root/os_init.sh')
-    ssh.cmd('bash /root/os_init.sh {} {}'.format(hostname, monitor_node))
+    log.info("新建管理用户[%s]" % user)
+    ssh.cmd('useradd %s' % user)
+    ssh.cmd('mkdir /home/%s/.ssh' % user)
+    log.info("传输秘钥")
+    ssh.upload('/data/scripts/%s_authorized_keys' % user, '/home/%s/.ssh/authorized_keys' % user)
+    ssh.cmd('chmod -R 700 /home/{}/.ssh && chown {}.{} -R /home/{}/.ssh && chmod -R 600 /home/{}/.ssh/authorized_keys'.format(user, user, user, user, user))
+    ssh.cmd("grep {} /etc/sudoers || echo '%{}    ALL=(ALL)       NOPASSWD: ALL,!/bin/su,!/usr/bin/passwd' >>/etc/sudoers".format(user, user))
+    # 新建普通用户，并传输秘钥
+    user = 'view'
+    # 新建管理用户，并传输秘钥
+    log.info("新建管理用户[%s]" % user)
+    ssh.cmd('useradd %s' % user)
+    ssh.cmd('mkdir /home/%s/.ssh' % user)
+    log.info("传输秘钥")
+    ssh.upload('/data/scripts/%s_authorized_keys' % user, '/home/%s/.ssh/authorized_keys' % user)
+    ssh.cmd('chmod -R 700 /home/{}/.ssh && chown {}.{} -R /home/{}/.ssh && chmod -R 600 /home/{}/.ssh/authorized_keys'.format(user, user, user, user, user))
 
     # 加入ansible tmp
-    shell = 'echo {}>>/data/scripts/wahaha/inventory/hosts-tmp'.format(ip)
+    log.info("机器加入ansible")
+    shell = 'echo %s >> /usr/local/bfcli/inventory/hosts-tmp' % ip
     os.system(shell)
     # 测试ansible
-    shell = 'ansible -i /data/scripts/wahaha/inventory/hosts-tmp {} -m ping'.format(ip)
+    log.info("测试目标机器的连通性")
+    shell = 'ansible -i /usr/local/bfcli/inventory/hosts-tmp {} -m ping > {}'.format(ip, init_log)
     os.system(shell)
+
+    # 传递初始化脚本
+    log.info("传递初始化脚本")
+    ssh.upload('/data/scripts/os_init.sh', '/root/os_init.sh')
+    log.warning("目标机器执行初始化脚本， 此过程耗时较长")
+    # ssh.cmd('bash /root/os_init.sh {} {}'.format(hostname, monitor_node))
 
 
 if __name__ == '__main__':
     hostname = sys.argv[1]
     ip = sys.argv[2]
     monitor_node = 'sh'
+    init_log = 'aaa.log'
+    Logger = Log('/tmp', init_log, log_level='INFO')
+    log = Logger.Logger
     ssh = SSHConnection(host=ip)
-    gogobar()
+    gogobar(hostname, ip, monitor_node, init_log)
     ssh.close()

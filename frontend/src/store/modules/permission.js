@@ -191,4 +191,5 @@ export const componentsMap = {
   idc: () => import('@/views/cmdb/idc'),
   hostgroup: () => import('@/views/cmdb/hostgroup'),
   host: () => import('@/views/cmdb/host'),
+  inithost: () => import('@/views/cmdb/inithost'),
 }

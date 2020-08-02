@@ -21,12 +21,11 @@ export default {
     chatmessage: '消息管理',
     chatroom: '聊天室',
     cmdb: '资产管理',
-    history: '历史命令',
     shell: '执行命令',
     idc: '机房',
     hostgroup: '主机组',
     host: '主机',
-    all_ticket: '所有工单',
+    inithost: '初始化主机',
   },
   navbar: {
     logOut: '退出登录',

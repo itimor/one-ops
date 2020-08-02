@@ -118,10 +118,11 @@ export function AvatarFilter(val) {
 // 按钮
 export function ASSET_STATUSFilter(val) {
   const Map = {
-    1: '使用中',
+    0: '待初始化',
+    1: '已使用',
     2: '未使用',
-    3: '故障',
-    4: '报废'
+    3: '待下线',
+    4: '已下线',
   }
   return Map[val]
 }
