@@ -9,13 +9,13 @@ import os
 
 
 class Upload(BaseModel):
-    username = models.CharField(max_length=20, verbose_name=u'上传用户')
-    file = models.FileField(upload_to=PathAndRename("./"), blank=True, verbose_name=u'上传文件')
-    archive = models.CharField(max_length=201, default=u'其他', null=True, blank=True, verbose_name=u'文件归档')
-    filename = models.CharField(max_length=201, null=True, blank=True, verbose_name=u'文件名')
-    filepath = models.CharField(max_length=201, null=True, blank=True, verbose_name=u'文件路径')
-    type = models.CharField(max_length=100, null=True, blank=True, verbose_name=u'文件类型')
-    size = models.CharField(max_length=20, null=True, blank=True, verbose_name=u'文件大小')
+    username = models.CharField(max_length=20, verbose_name='上传用户')
+    file = models.FileField(upload_to=PathAndRename("./"), blank=True, verbose_name='上传文件')
+    archive = models.CharField(max_length=201, default='其他', null=True, blank=True, verbose_name='文件归档')
+    filename = models.CharField(max_length=201, null=True, blank=True, verbose_name='文件名')
+    filepath = models.CharField(max_length=201, null=True, blank=True, verbose_name='文件路径')
+    type = models.CharField(max_length=100, null=True, blank=True, verbose_name='文件类型')
+    size = models.CharField(max_length=20, null=True, blank=True, verbose_name='文件大小')
 
     def save(self, *args, **kwargs):
         from re import sub
@@ -29,16 +29,16 @@ class Upload(BaseModel):
         return self.filepath
 
     class Meta:
-        verbose_name = u'文件上传'
-        verbose_name_plural = u'文件上传'
+        verbose_name = '文件上传'
+        verbose_name_plural = '文件上传'
 
 
 class FileUpload(models.Model):
-    file = models.FileField(upload_to=("./tmp"), blank=True, verbose_name=u'上传文件')
+    file = models.FileField(upload_to=("./tmp"), blank=True, verbose_name='上传文件')
 
     class Meta:
-        verbose_name = u'文件上传'
-        verbose_name_plural = u'文件上传'
+        verbose_name = '文件上传'
+        verbose_name_plural = '文件上传'
 
 
 class RequestEvent(BaseModel):

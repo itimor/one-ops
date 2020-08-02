@@ -52,7 +52,9 @@ class CmdConsumer(WebsocketConsumer):
 class TailfConsumer(WebsocketConsumer):
     def connect(self):
         self.filename = self.scope["url_route"]["kwargs"]["filename"]
-        self.result = tailf.delay(self.filename, self.channel_name)
+        # log_path = '/tmp/' + self.filename + '.log'
+        log_path = self.filename + '.log'
+        self.result = tailf.delay(log_path, self.channel_name)
         print('connect:', self.channel_name, self.result.id)
         self.accept()
 

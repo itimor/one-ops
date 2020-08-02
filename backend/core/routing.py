@@ -19,7 +19,7 @@ application = ProtocolTypeRouter({
                     # str_path
                     re_path(r'^ws/chat/(?P<group_name>[\w-]+)', ChatConsumer),
                     re_path(r'^ws/shell/(?P<cid>[\w-]+)', CmdConsumer),
-                    re_path(r'^ws/tailf/(?P<filename>[\w-]+)/$', TailfConsumer),
+                    re_path(r'^ws/tailf/(?P<filename>[\w-]+)', TailfConsumer),
                 ]
             )
         )

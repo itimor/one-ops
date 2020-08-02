@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # author: itimor
 
-from ssh_client import SSHConnection
-from init_log import Log
+from utils.ssh_client import SSHConnection
+from utils.init_log import Log
 import sys
 import os
 
@@ -10,7 +10,13 @@ Logger = Log()
 log = Logger.Logger
 
 
-def gogobar(hostname, ip, monitor_node, init_log):
+def gogobar(log_path, log_name, hostname, ip, monitor_node=None):
+    Logger = Log(log_path, log_name, log_level='INFO')
+    log = Logger.Logger
+    filename = '{}/{}'.format(log_path, log_name)
+
+    ssh = SSHConnection(host=ip)
+
     user = 'manager'
     # 新建管理用户，并传输秘钥
     log.info("新建管理用户[%s]" % user)
@@ -36,7 +42,7 @@ def gogobar(hostname, ip, monitor_node, init_log):
     os.system(shell)
     # 测试ansible
     log.info("测试目标机器的连通性")
-    shell = 'ansible -i /usr/local/bfcli/inventory/hosts-tmp {} -m ping > {}'.format(ip, init_log)
+    shell = 'ansible -i /usr/local/bfcli/inventory/hosts-tmp {} -m ping > {}'.format(ip, filename)
     os.system(shell)
 
     # 传递初始化脚本
@@ -45,14 +51,13 @@ def gogobar(hostname, ip, monitor_node, init_log):
     log.warning("目标机器执行初始化脚本， 此过程耗时较长")
     # ssh.cmd('bash /root/os_init.sh {} {}'.format(hostname, monitor_node))
 
+    ssh.close()
+
 
 if __name__ == '__main__':
     hostname = sys.argv[1]
     ip = sys.argv[2]
     monitor_node = 'sh'
-    init_log = 'aaa.log'
-    Logger = Log('/tmp', init_log, log_level='INFO')
-    log = Logger.Logger
-    ssh = SSHConnection(host=ip)
-    gogobar(hostname, ip, monitor_node, init_log)
-    ssh.close()
+    log_path = '/tmp'
+    log_name = 'aaa.log'
+    gogobar(log_path, log_name, hostname, ip, monitor_node)

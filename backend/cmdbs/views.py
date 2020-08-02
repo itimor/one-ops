@@ -3,6 +3,10 @@
 
 from cmdbs.serializers import *
 from common.views import ModelViewSet, JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from utils.index import gen_time_pid
+from celery_tasks.tasks import init_host
 
 
 class HistoryViewSet(ModelViewSet):
@@ -36,3 +40,17 @@ class HostViewSet(ModelViewSet):
         if self.action in ['list', 'retrieve'] or self.resultData:
             return HostReadSerializer
         return HostSerializer
+
+
+class inithost(APIView):
+    """初始化主机"""
+
+    def post(self, request, *args, **kwargs):
+        ret = {'code': 20000, 'msg': "success"}
+        log_path = '/tmp'
+        log_name = gen_time_pid('inithost')
+        hosts = request.data["hosts"]
+        monitor_node = "aa"
+        # init_host.delay(log_path, log_name, hosts, monitor_node)
+        ret['results'] = {"log_path": log_path, "log_name": log_name}
+        return Response(ret)

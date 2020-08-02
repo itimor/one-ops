@@ -32,7 +32,7 @@ class Idc(BaseModel):
 
 
 class HostGroup(BaseModel):
-    name = models.CharField(max_length=32, unique=True, verbose_name=u'主机组')
+    name = models.CharField(max_length=32, unique=True, verbose_name='主机组')
     code = models.CharField(max_length=32, unique=True, verbose_name='代码')
 
     def __str__(self):
@@ -68,7 +68,7 @@ class Host(BaseModel):
     other_ip = models.CharField(max_length=100, null=True, blank=True, verbose_name="其他IP")
     have_net = models.BooleanField(default=False, verbose_name="有外网")
     gateway = models.CharField(max_length=20, null=True, blank=True, verbose_name="网关")
-    groups = models.ManyToManyField(HostGroup, blank=True, related_name='host_group', verbose_name=u'主机组')
+    groups = models.ManyToManyField(HostGroup, blank=True, related_name='host_group', verbose_name='主机组')
     idc = models.ForeignKey(Idc, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="机房")
     asset_type = models.CharField(choices=tuple(ASSET_TYPE.items()), default=2, max_length=30, verbose_name="设备类型")
     status = models.CharField(choices=tuple(ASSET_STATUS.items()), default=0, max_length=30, verbose_name="设备状态")

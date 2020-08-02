@@ -5,7 +5,7 @@ from celery import shared_task
 from time import sleep
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from django.conf import settings
+from utils.init_host import gogobar
 
 
 @shared_task
@@ -39,22 +39,39 @@ def send_telegram(token, chat_id, content):
 
 
 @shared_task
+def init_host(log_path, log_name, hosts, monitor_node):
+    for host in hosts:
+        hostname = host['hostname']
+        ip = host['ip']
+        gogobar(log_path, log_name, hostname, ip, monitor_node)
+
+
+@shared_task
 def tailf(filename, channel_name):
     channel_layer = get_channel_layer()
-    try:
-        with open(filename) as f:
-            f.seek(0, 2)
-            while True:
-                line = f.readline()
-                if line:
-                    async_to_sync(channel_layer.send)(
-                        channel_name,
-                        {
-                            "type": "send_log",
-                            "message": "微信公众号【运维咖啡吧】原创 版权所有 " + str(line)
-                        }
-                    )
-                else:
-                    sleep(0.5)
-    except Exception as e:
-        print(e)
+    while True:
+        sleep(1)
+        async_to_sync(channel_layer.send)(
+            channel_name,
+            {
+                "type": "send_log",
+                "message": "微信公众号【运维咖啡吧】原创 版权所有 " + str(1)
+            }
+        )
+    # try:
+    #     with open(filename) as f:
+    #         f.seek(0, 2)
+    #         while True:
+    #             line = f.readline()
+    #             if line:
+    #                 async_to_sync(channel_layer.send)(
+    #                     channel_name,
+    #                     {
+    #                         "type": "send_log",
+    #                         "message": "微信公众号【运维咖啡吧】原创 版权所有 " + str(line)
+    #                     }
+    #                 )
+    #             else:
+    #                 sleep(0.5)
+    # except Exception as e:
+    #     print(e)

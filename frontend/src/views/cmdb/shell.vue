@@ -64,6 +64,9 @@ export default {
   created() {
     this.getList();
   },
+  destroyed() {
+    this.socket.close(); //离开路由之后断开websocket连接
+  },
   methods: {
     getList() {
       history.requestGet().then((response) => {
@@ -167,9 +170,6 @@ export default {
       //数据发送
       this.socket.send(JSON.stringify(this.temp));
     },
-  },
-  destroyed() {
-    this.socket.close(); //离开路由之后断开websocket连接
   },
 };
 </script>

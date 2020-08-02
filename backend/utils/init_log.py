@@ -9,7 +9,7 @@ from sys import version_info
 class Log(object):
     def __init__(self, log_path='/tmp', log_name='fuck.log', log_level='DEBUG'):
         if not os.path.exists(log_path): os.mkdir(log_path)
-        self.__path = os.path.join(log_path, log_name)
+        self.__path = os.path.join(log_path, log_name + '.log')
         self.__level = log_level
         self.__logger = logging.getLogger()
         self.__logger.setLevel(self.__level)
