@@ -71,3 +71,14 @@ TEMPLATES = [
         },
     },
 ]
+
+ASGI_APPLICATION = "core.routing.application"  # 上面新建的 asgi 应用
+CHANNEL_LAYERS = {
+    'default': {
+        # 这里用到了 channels_redis
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],  # 配置你自己的 redis 服务信息
+        },
+    }
+}
