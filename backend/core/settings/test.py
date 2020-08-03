@@ -29,6 +29,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #         }
 #     }
 # }
+# 加载 mysql
+# import pymysql
+# pymysql.install_as_MySQLdb()
+
 # sqlite
 DATABASES = {
     'default': {
@@ -36,10 +40,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, '../core.db'),
     }
 }
-
-# 加载 mysql
-import pymysql
-pymysql.install_as_MySQLdb()
 
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
