@@ -17,16 +17,23 @@ ALLOWED_HOSTS = ['*']
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # mysql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'crontab',
+#         'USER': 'root',
+#         'PASSWORD': 'momo520',
+#         'HOST': 'localhost',
+#         'OPTIONS': {
+#             "init_command": "SET foreign_key_checks=0;",
+#         }
+#     }
+# }
+# sqlite
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crontab',
-        'USER': 'root',
-        'PASSWORD': 'momo520',
-        'HOST': 'localhost',
-        'OPTIONS': {
-            "init_command": "SET foreign_key_checks=0;",
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, '../core.db'),
     }
 }
 
