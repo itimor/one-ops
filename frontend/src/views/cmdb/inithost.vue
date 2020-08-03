@@ -59,7 +59,7 @@
         <el-card>
           <div slot="header" class="clearfix">
             <span>日志</span>
-            <el-button style="float: right; padding: 3px 0; color:red;" type="text">{{tail_logname}}</el-button>
+            <span style="float: right; padding: 3px 0; color:red;" type="text">{{tail_log.log_path}}/{{tail_log.log_name}}</span>
           </div>
           <el-alert title="不可关闭的 alert" type="success" :closable="false"></el-alert>
         </el-card>
@@ -104,7 +104,7 @@ export default {
       temp: {},
       group_list: [],
       idc_list: [],
-      tail_logname: "",
+      tail_log: {},
       ws_uri: "/ws/tailf/", // ws path
       lockReconnect: false, // 连接失败不进行重连
       maxReconnect: 5, // 最大重连次数，若连接失败
@@ -172,8 +172,8 @@ export default {
         }),
       };
       c_cmdb.inithost(data).then((response) => {
-        this.tail_logname = response.results.log_name;
-        this.initWebSocket(this.tail_logname)
+        this.tail_log = response.results;
+        this.initWebSocket(this.tail_log.log_name)
       });
     },
     scrollToBottom() {

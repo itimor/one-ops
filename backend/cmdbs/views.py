@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from utils.index import gen_time_pid
 from celery_tasks.tasks import init_host
+from utils.init_host import gogobar
 
 
 class HistoryViewSet(ModelViewSet):
@@ -47,10 +48,14 @@ class inithost(APIView):
 
     def post(self, request, *args, **kwargs):
         ret = {'code': 20000, 'msg': "success"}
-        log_path = '/tmp'
+        log_path = 'cmdb_log'
         log_name = gen_time_pid('inithost')
         hosts = request.data["hosts"]
         monitor_node = "aa"
-        # init_host.delay(log_path, log_name, hosts, monitor_node)
+        # for host in hosts:
+        #     hostname = host['hostname']
+        #     ip = host['ip']
+        #     gogobar(log_path, log_name, hostname, ip, monitor_node)
+        init_host.delay(log_path, log_name, hosts, monitor_node)
         ret['results'] = {"log_path": log_path, "log_name": log_name}
         return Response(ret)

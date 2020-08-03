@@ -2,6 +2,7 @@
 # author: itimor
 
 import sys
+import os
 import json
 from channels.generic.websocket import WebsocketConsumer
 from cmdbs.cmdrun import run_shell
@@ -52,7 +53,8 @@ class CmdConsumer(WebsocketConsumer):
 class TailfConsumer(WebsocketConsumer):
     def connect(self):
         self.filename = self.scope["url_route"]["kwargs"]["filename"]
-        log_path = '/tmp/' + self.filename + '.log'
+        log_path = 'cmdb_log'
+        os.path.join(log_path, self.filename + '.log')
         self.result = tailf.delay(log_path, self.channel_name)
         print('connect:', self.channel_name, self.result.id)
         self.accept()
