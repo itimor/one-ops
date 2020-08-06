@@ -26,6 +26,9 @@ DATABASES = {
         }
     }
 }
+# 加载 mysql
+import pymysql
+pymysql.install_as_MySQLdb()
 
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
