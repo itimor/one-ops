@@ -115,12 +115,20 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s'
+        },
         'simple': {
-            'format': '%(levelname)s %(asctime)s %(message)s',
-            'datefmt': '%y %b %d, %H:%M:%S',
+            'format': '%(asctime)s %(levelname)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
     'handlers': {
+        'more': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
@@ -131,11 +139,10 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'more',
         },
     }
 }
-
 dictConfig(LOGGING)
 
 DJANGO_ALLOW_ASYNC_UNSAFE = True
