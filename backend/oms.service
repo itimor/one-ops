@@ -4,7 +4,7 @@ Description=uWSGI instance to serve one-oms
 [Service]
 User=root
 Group=root
-WorkingDirectory=/data/app/one/backend
+WorkingDirectory=/data/projects/one-ops/backend
 ExecStartPre=-/bin/mkdir -p /data/logs
 ExecStart=/root/.pyenv/versions/envops/bin/uwsgi --ini oms.ini --touch-reload=/usr/local/nginx/uwsgi_params
 Restart=on-failure
