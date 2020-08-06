@@ -48,7 +48,7 @@ class inithost(APIView):
 
     def post(self, request, *args, **kwargs):
         ret = {'code': 20000, 'msg': "success"}
-        log_path = 'cmdb_log'
+        log_path = '/tmp/cmdb_log'
         log_name = gen_time_pid('inithost')
         hosts = request.data["hosts"]
         monitor_node = "aa"
