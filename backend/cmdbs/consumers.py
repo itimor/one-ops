@@ -4,7 +4,7 @@
 import sys
 import os
 import json
-from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer
 from cmdbs.cmdrun import run_shell
 from cmdbs.serializers import *
 from rest_framework.renderers import JSONRenderer
@@ -50,22 +50,22 @@ class CmdConsumer(WebsocketConsumer):
                 self.send(text_data=json.dumps(obj))
 
 
-class TailfConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
+class TailfConsumer(WebsocketConsumer):
+    def connect(self):
         self.filename = self.scope["url_route"]["kwargs"]["filename"]
         log_path = '/tmp/cmdb_log'
         os.path.join(log_path, self.filename + '.log')
         self.result = tailf.delay(log_path, self.channel_name)
         print('connect:', self.channel_name, self.result.id)
-        await self.accept()
+        self.accept()
 
-    async def disconnect(self, close_code):
+    def disconnect(self, close_code):
         # 中止执行中的Task
-        await self.result.revoke(terminate=True)
+        self.result.revoke(terminate=True)
         print('disconnect:', self.filename, self.channel_name)
-        await self.close()
+        self.close()
 
-    async def send_log(self, event):
-        await self.send(text_data=json.dumps({
+    def send_log(self, event):
+        self.send(text_data=json.dumps({
             "text": event["message"]
         }))
