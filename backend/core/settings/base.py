@@ -113,7 +113,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
             'format': '%(asctime)s %(levelname)s %(module)s %(lineno)d %(message)s'
@@ -124,20 +124,15 @@ LOGGING = {
         },
     },
     'handlers': {
-        'more': {
-            'level': 'INFO',
+        'console': {
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['more'],
+            'handlers': ['console'],
             'propagate': True,
             'level': 'INFO',
         },
