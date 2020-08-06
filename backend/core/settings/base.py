@@ -137,9 +137,9 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['more'],
             'propagate': True,
-            'level': 'more',
+            'level': 'INFO',
         },
     }
 }
