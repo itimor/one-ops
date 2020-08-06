@@ -52,10 +52,6 @@ class inithost(APIView):
         log_name = gen_time_pid('inithost')
         hosts = request.data["hosts"]
         monitor_node = "aa"
-        # for host in hosts:
-        #     hostname = host['hostname']
-        #     ip = host['ip']
-        #     gogobar(log_path, log_name, hostname, ip, monitor_node)
         init_host.delay(log_path, log_name, hosts, monitor_node)
         ret['results'] = {"log_path": log_path, "log_name": log_name}
         return Response(ret)
