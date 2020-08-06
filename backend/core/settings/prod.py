@@ -17,7 +17,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crontab',
+        'NAME': 'ops',
         'USER': 'root',
         'PASSWORD': 'momo520',
         'HOST': 'localhost',
