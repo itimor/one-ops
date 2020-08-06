@@ -42,7 +42,7 @@ def gogobar(log_path, log_name, hostname, ip, monitor_node=None):
     os.system(shell)
     # 测试ansible
     log.info("测试目标机器的连通性")
-    shell = 'ansible -i /usr/local/bfcli/inventory/hosts-tmp {} -m ping > {}'.format(ip, filename)
+    shell = 'ansible -i /usr/local/bfcli/inventory/hosts-tmp {} -m ping > {}.log'.format(ip, filename)
     os.system(shell)
 
     # 传递初始化脚本

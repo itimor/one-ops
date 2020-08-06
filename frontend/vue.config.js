@@ -42,7 +42,8 @@ module.exports = {
     public: 'http://127.0.0.1:8080',  // 本地ip
     proxy: {
       '/api/':{
-        target:'http://127.0.0.1:8000',
+        // target:'http://127.0.0.1:8000',
+        target:'http://192.168.0.111:8000',
         changeOrigin:true
       }
     }
