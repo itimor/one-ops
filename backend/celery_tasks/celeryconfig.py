@@ -39,10 +39,10 @@ CELERYBEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_BEAT_SCHEDULER = CELERYBEAT_SCHEDULER
 
 # 定时任务
-# CELERYBEAT_SCHEDULE = {
-#     'sum-task': {
-#         'task': 'celery_tasks.tasks.add',
-#         'schedule': timedelta(seconds=30),
-#         'args': (3, 4)
-#     }
-# }
+CELERYBEAT_SCHEDULE = {
+    'sum-task': {
+        'task': 'celery_tasks.tasks.add',
+        'schedule': timedelta(seconds=30),
+        'args': (3, 4)
+    }
+}

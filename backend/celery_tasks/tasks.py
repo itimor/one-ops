@@ -8,11 +8,11 @@ from asgiref.sync import async_to_sync
 from utils.init_host import gogobar
 
 
-# @shared_task
-# def add(x, y):
-#     sleep(30)
-#     return x + y
-#
+@shared_task
+def add(x, y):
+    sleep(30)
+    return x + y
+
 
 @shared_task
 def send_mail(subject, mail_to, mail_host, mail_user, mail_password, content):
