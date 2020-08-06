@@ -232,7 +232,7 @@ export default {
       //数据接收
       const data = JSON.parse(e.data);
       this.results.push(data["text"]);
-      // console.log("得到响应", data);
+      console.log("得到响应", data);
       // 消息获取成功，重置心跳
       this.scrollToBottom();
     },

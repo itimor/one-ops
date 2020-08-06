@@ -54,7 +54,6 @@ def tailf(filename, channel_name):
             f.seek(0, 2)
             while True:
                 line = f.readline()
-                print(line)
                 if line:
                     async_to_sync(channel_layer.send)(
                         channel_name,
