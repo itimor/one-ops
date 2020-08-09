@@ -139,7 +139,8 @@ export default {
         this.socket.onmessage = this.websocketonmessage;
         this.socket.onclose = this.websocketclose;
       } catch (e) {
-        this.reconnect();
+        console.log(e);
+        // this.reconnect();
       }
     },
     websocketonopen() {
@@ -150,7 +151,7 @@ export default {
     websocketonerror(e) {
       //连接建立失败重连
       console.log("WebSocket连接发生错误", e);
-      this.reconnect();
+      // this.reconnect();
     },
     websocketonmessage(e) {
       //数据接收
