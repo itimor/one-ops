@@ -2,6 +2,7 @@
 Description=uWSGI instance to serve one-oms
 
 [Service]
+Type=notify
 User=root
 Group=root
 WorkingDirectory=/data/projects/one-ops/backend
@@ -9,7 +10,6 @@ ExecStartPre=-/bin/mkdir -p /data/logs
 ExecStart=/root/.pyenv/versions/envops/bin/uwsgi --ini /data/projects/one-ops/backend/systemd/uswgi/oms.ini --touch-reload=/usr/local/nginx/uwsgi_params
 Restart=on-failure
 KillSignal=SIGQUIT
-Type=simple
 NotifyAccess=all
 
 [Install]
