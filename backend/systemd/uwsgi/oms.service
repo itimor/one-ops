@@ -7,7 +7,7 @@ User=root
 Group=root
 WorkingDirectory=/data/projects/one-ops/backend
 ExecStartPre=-/bin/mkdir -p /data/logs
-ExecStart=/root/.pyenv/versions/envops/bin/uwsgi --ini /data/projects/one-ops/backend/systemd/uswgi/config.ini --touch-reload=/usr/local/nginx/uwsgi_params
+ExecStart=/root/.pyenv/versions/envops/bin/uwsgi --ini /data/projects/one-ops/backend/systemd/uswgi/config.ini --http-websockets
 Restart=on-failure
 KillSignal=SIGQUIT
 NotifyAccess=all
