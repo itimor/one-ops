@@ -51,16 +51,15 @@ def tailf(filename, channel_name):
     channel_layer = get_channel_layer()
     try:
         with open(filename) as f:
-
             f.seek(0, 2)
             while True:
                 line = f.readline()
-                if line:
+                if line != '':
                     async_to_sync(channel_layer.send)(
                         channel_name,
                         {
                             "type": "send_log",
-                            "message": line
+                            "text": line.strip()
                         }
                     )
                 else:

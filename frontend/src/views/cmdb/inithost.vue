@@ -59,9 +59,14 @@
         <el-card>
           <div slot="header" class="clearfix">
             <span>日志</span>
-            <span style="float: right; padding: 3px 0; color:red;" type="text">{{tail_log.log_path}}/{{tail_log.log_name}}</span>
+            <span
+              style="float: right; padding: 3px 0; color:red;"
+              type="text"
+            >{{tail_log.log_path}}/{{tail_log.log_name}}</span>
           </div>
-          <el-alert title="不可关闭的 alert" type="success" :closable="false"></el-alert>
+          <div v-for="item in results" :key="item.id">
+            <el-alert :title="item.text" :type="item.type" :closable="false"></el-alert>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -173,7 +178,7 @@ export default {
       };
       c_cmdb.inithost(data).then((response) => {
         this.tail_log = response.results;
-        this.initWebSocket(this.tail_log.log_name)
+        this.initWebSocket(this.tail_log.log_name);
       });
     },
     scrollToBottom() {
@@ -231,8 +236,18 @@ export default {
     websocketonmessage(e) {
       //数据接收
       const data = JSON.parse(e.data);
-      this.results.push(data["text"]);
-      console.log("得到响应", data);
+      let result;
+      result.text = data["text"];
+      if (data["text"].search("INFO") != -1) {
+        result.type = "success";
+      } else if (data["text"].search("WARNING") != -1) {
+        result.type = "warning";
+      } else if (data["text"].search("ERROR") != -1) {
+        result.type = "error";
+      } else {
+        result.type = "info";
+      }
+      this.results.push(result);
       // 消息获取成功，重置心跳
       this.scrollToBottom();
     },

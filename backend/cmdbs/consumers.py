@@ -59,7 +59,7 @@ class TailfConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
-        self.close()
+        self.close(553)
 
     def receive(self, text_data):
         # 实时输出
@@ -72,3 +72,24 @@ class TailfConsumer(WebsocketConsumer):
                     self.send(text_data=json.dumps(obj))
                 else:
                     sleep(0.5)
+
+
+class ShowlogConsumer(WebsocketConsumer):
+    def connect(self):
+        self.filename = self.scope["url_route"]["kwargs"]["filename"]
+        log_path = '/tmp/cmdb_log'
+        log_full_path = os.path.join(log_path, self.filename + '.log')
+        self.result = tailf.delay(log_full_path, self.channel_name)
+        print('connect:', self.channel_name, self.result.id)
+        self.accept()
+
+    def disconnect(self, close_code):
+        # 中止执行中的Task
+        self.result.revoke(terminate=True)
+        print('disconnect:', self.filename, self.channel_name)
+        self.close()
+
+    def send_log(self, event):
+        self.send(text_data=json.dumps({
+            "text": event["message"]
+        }))
