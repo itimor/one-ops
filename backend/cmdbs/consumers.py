@@ -42,7 +42,7 @@ class CmdConsumer(WebsocketConsumer):
         while True:
             line = a.stdout.readline()
             # print(line, end='')
-            if line == '' or a.poll() is not None:  # 判断子进程是否结束
+            if line == '' and a.poll() is not None:  # 判断子进程是否结束
                 break
             sys.stdout.flush()
             if line != '':
