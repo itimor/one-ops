@@ -236,7 +236,7 @@ export default {
     websocketonmessage(e) {
       //数据接收
       const data = JSON.parse(e.data);
-      let result;
+      const result = {text: "null", type: "info"}
       result.text = data["text"];
       if (data["text"].search("INFO") != -1) {
         result.type = "success";
