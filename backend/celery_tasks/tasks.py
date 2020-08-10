@@ -51,6 +51,7 @@ def tailf(filename, channel_name):
     channel_layer = get_channel_layer()
     try:
         with open(filename) as f:
+
             f.seek(0, 2)
             while True:
                 line = f.readline()
