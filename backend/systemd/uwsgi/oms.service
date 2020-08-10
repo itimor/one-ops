@@ -2,7 +2,7 @@
 Description=uWSGI instance to serve one-oms
 
 [Service]
-Type=notify
+Type=simple
 User=root
 Group=root
 WorkingDirectory=/data/projects/one-ops/backend
