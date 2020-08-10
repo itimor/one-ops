@@ -247,6 +247,7 @@ export default {
       } else {
         result.type = "info";
       }
+      console.log(result)
       this.results.push(result);
       // 消息获取成功，重置心跳
       this.scrollToBottom();
