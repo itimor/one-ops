@@ -6,9 +6,6 @@ from utils.init_log import Log
 import sys
 import os
 
-Logger = Log()
-log = Logger.Logger
-
 
 def gogobar(log_path, log_name, hostname, ip, monitor_node=None):
     Logger = Log(log_path, log_name, log_level='INFO')

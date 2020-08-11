@@ -53,7 +53,7 @@ class CmdConsumer(WebsocketConsumer):
 
 class TailfConsumer(WebsocketConsumer):
     def connect(self):
-        log_path = '/tmp/cmdb_log'
+        log_path = 'cmdb_log'
         filename = self.scope["url_route"]["kwargs"]["filename"]
         self.log_full_path = os.path.join(log_path, filename + '.log')
         self.accept()
@@ -77,7 +77,7 @@ class TailfConsumer(WebsocketConsumer):
 class ShowlogConsumer(WebsocketConsumer):
     def connect(self):
         self.filename = self.scope["url_route"]["kwargs"]["filename"]
-        log_path = '/tmp/cmdb_log'
+        log_path = 'cmdb_log'
         log_full_path = os.path.join(log_path, self.filename + '.log')
         self.result = tailf.delay(log_full_path, self.channel_name)
         print('connect:', self.channel_name, self.result.id)

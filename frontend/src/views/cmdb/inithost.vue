@@ -59,10 +59,9 @@
         <el-card>
           <div slot="header" class="clearfix">
             <span>日志</span>
-            <span
-              style="float: right; padding: 3px 0; color:red;"
-              type="text"
-            >{{tail_log.log_path}}/{{tail_log.log_name}}</span>
+            <span style="float: right; padding: 3px 0; color:red;">
+              {{tail_log.log_name}}
+            </span>
           </div>
           <div v-for="item in results" :key="item.id">
             <el-alert :title="item.text" :type="item.type" :closable="false"></el-alert>
@@ -178,7 +177,7 @@ export default {
       };
       c_cmdb.inithost(data).then((response) => {
         this.tail_log = response.results;
-        this.initWebSocket(this.tail_log.log_name);
+        // this.initWebSocket(this.tail_log.log_name);
       });
     },
     scrollToBottom() {
@@ -236,7 +235,7 @@ export default {
     websocketonmessage(e) {
       //数据接收
       const data = JSON.parse(e.data);
-      const result = {text: "null", type: "info"}
+      const result = { text: "null", type: "info" };
       result.text = data["text"];
       if (data["text"].search("INFO") != -1) {
         result.type = "success";
@@ -247,7 +246,7 @@ export default {
       } else {
         result.type = "info";
       }
-      console.log(data)
+      console.log(data);
       this.results.push(result);
       // 消息获取成功，重置心跳
       this.scrollToBottom();
