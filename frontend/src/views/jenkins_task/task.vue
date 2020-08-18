@@ -25,14 +25,6 @@
           icon="el-icon-edit"
           @click="handleCreate"
         >{{ "添加" }}</el-button>
-        <el-button
-          v-if="permissionList.del"
-          :disabled="multipleSelection.length<1"
-          class="filter-item"
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleBatchDel"
-        >{{ "删除" }}</el-button>
       </el-button-group>
     </div>
 
@@ -44,31 +36,12 @@
       highlight-current-row
       @sort-change="handleSortChange"
     >
-      <el-table-column label="名称" prop="hostname"></el-table-column>
-      <el-table-column label="主IP" prop="ip"></el-table-column>
-      <el-table-column label="主机组" prop="groups">
-        <template slot-scope="{ row }">
-          <span v-for="item in row.groups" :key="item.id">{{item.name}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="机房" prop="idc">
-        <template slot-scope="{ row }">
-          <span>{{row.idc.name}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类型" prop="asset_type">
-        <template slot-scope="{ row }">
-          <span>{{row.asset_type|ASSET_TYPEFilter}}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="名称" prop="name"></el-table-column>
+      <el-table-column label="code" prop="code"></el-table-column>
       <el-table-column label="状态" prop="status">
         <template slot-scope="{ row }">
-          <span>{{row.asset_type|ASSET_STATUSFilter}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="系统" prop="os">
-        <template slot-scope="{ row }">
-          <span>{{row.os|OS_TYPEFilter}}</span>
+          <el-tag v-if="row.status" type="success">启用</el-tag>
+          <el-tag v-else type="danger">禁用</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
@@ -112,54 +85,14 @@
         label-width="80px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="名称" prop="hostname">
-          <el-input v-model="temp.hostname" />
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="ip" prop="ip">
-          <el-input v-model="temp.ip" />
-        </el-form-item>
-        <el-form-item label="主机组" prop="groups">
-          <el-select v-model="temp.groups" filterable multiple placeholder="请选择主机组">
-            <el-option
-              v-for="item in group_list"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="机房" prop="idc">
-          <el-select v-model="temp.idc" filterable placeholder="请选择机房">
-            <el-option v-for="item in idc_list" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="类型" prop="asset_type">
-          <el-select v-model="temp.asset_type" filterable placeholder="请选择设备类型">
-            <el-option
-              v-for="(label, value) in ASSET_TYPE"
-              :key="value"
-              :label="label"
-              :value="value"
-            ></el-option>
-          </el-select>
+        <el-form-item label="code" prop="code">
+          <el-input v-model="temp.code" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-select v-model="temp.status" filterable placeholder="请选择设备状态">
-            <el-option
-              v-for="(label, value) in ASSET_STATUS"
-              :key="value"
-              :label="label"
-              :value="value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="资产编号" prop="an">
-          <el-input v-model="temp.an" />
-        </el-form-item>
-        <el-form-item label="状态" prop="os">
-          <el-select v-model="temp.os" filterable placeholder="请选择系统版本">
-            <el-option v-for="(label, value) in OS_TYPE" :key="value" :label="label" :value="value"></el-option>
-          </el-select>
+          <el-switch v-model="temp.status" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>
         <el-form-item label="备注" prop="memo">
           <el-input v-model="temp.memo" />
@@ -177,7 +110,7 @@
 </template>
 
 <script>
-import { host, idc, hostgroup, auth } from "@/api/all";
+import { task, auth } from "@/api/all";
 import Pagination from "@/components/Pagination";
 import {
   checkAuthAdd,
@@ -187,7 +120,7 @@ import {
 } from "@/utils/permission";
 
 export default {
-  name: "host",
+  name: "task",
 
   components: { Pagination },
   data() {
@@ -209,7 +142,6 @@ export default {
         search: undefined,
         ordering: undefined,
       },
-      multipleSelection: [],
       temp: {},
       dialogFormVisible: false,
       dialogStatus: "",
@@ -218,37 +150,8 @@ export default {
         create: "添加",
       },
       rules: {
-        hostname: [{ required: true, message: "请输入名称", trigger: "blur" }],
-        ip: [{ required: true, message: "请输入ip", trigger: "blur" }],
-        an: [{ required: true, message: "请输入内容", trigger: "blur" }],
-        groups: [{ required: true, message: "请输入内容", trigger: "change" }],
-        idc: [{ required: true, message: "请输入内容", trigger: "change" }],
-        asset_type: [
-          { required: true, message: "请输入内容", trigger: "blur" },
-        ],
-        status: [{ required: true, message: "请输入内容", trigger: "blur" }],
-      },
-      group_list: [],
-      idc_list: [],
-      ASSET_STATUS: {
-        0: "待初始化",
-        1: "已使用",
-        2: "未使用",
-        3: "待下线",
-        4: "已下线",
-      },
-      ASSET_TYPE: {
-        1: "物理机",
-        2: "虚拟机",
-        3: "容器",
-        4: "网络设备",
-        5: "其他设备",
-      },
-      OS_TYPE: {
-        1: "centos",
-        2: "windows",
-        3: "debian",
-        4: "other",
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        code: [{ required: true, message: "请输入code", trigger: "blur" }],
       },
     };
   },
@@ -256,8 +159,6 @@ export default {
   created() {
     this.getMenuButton();
     this.getList();
-    this.getGroupList();
-    this.getIdcList();
   },
   methods: {
     checkPermission() {
@@ -268,7 +169,7 @@ export default {
     },
     getMenuButton() {
       auth
-        .requestMenuButton("host")
+        .requestMenuButton("task")
         .then((response) => {
           this.operationList = response.results;
         })
@@ -278,20 +179,10 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      host.requestGet(this.listQuery).then((response) => {
+      task.requestGet(this.listQuery).then((response) => {
         this.list = response.results;
         this.total = response.count;
         this.listLoading = false;
-      });
-    },
-    getGroupList() {
-      hostgroup.requestGet().then((response) => {
-        this.group_list = response.results;
-      });
-    },
-    getIdcList() {
-      idc.requestGet().then((response) => {
-        this.idc_list = response.results;
       });
     },
     handleFilter() {
@@ -309,14 +200,9 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        hostname: "",
-        ip: "",
-        groups: [],
-        idc: "",
-        asset_type: "",
-        status: "",
-        an: "",
-        os: "",
+        name: "",
+        code: "",
+        status: true,
         memo: "",
       };
     },
@@ -333,7 +219,7 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
-          host
+          task
             .requestPost(this.temp)
             .then((response) => {
               this.dialogFormVisible = false;
@@ -352,10 +238,7 @@ export default {
       });
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row, {
-        idc: row.idc.id,
-        groups: row.groups.map((a) => a.id),
-      });
+      this.temp = row;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -366,7 +249,7 @@ export default {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
           this.loading = true;
-          host
+          task
             .requestPut(this.temp.id, this.temp)
             .then(() => {
               this.dialogFormVisible = false;
@@ -390,34 +273,11 @@ export default {
         type: "warning",
       })
         .then(() => {
-          host.requestDelete(row.id).then(() => {
+          task.requestDelete(row.id).then(() => {
             this.$message({
               message: "删除成功",
               type: "success",
             });
-            this.getList();
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    },
-    handleBatchDel() {
-      this.$confirm("是否确定删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          const ids = this.multipleSelection.map((x) => x.id);
-          chatmessage.requestBulkDelete(ids).then((response) => {
-            console.log(response.results);
             this.getList();
           });
         })

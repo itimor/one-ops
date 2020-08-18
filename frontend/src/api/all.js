@@ -28,3 +28,7 @@ export const idc = new Request('/cmdb/idc/')
 export const hostgroup = new Request('/cmdb/hostgroup/')
 export const host = new Request('/cmdb/host/')
 export const history = new Request('/cmdb/history/')
+
+// jenkins_tasks
+export const task = new Request('/jenkins/task/')
+export const tasklog = new Request('/jenkins/tasklog/')

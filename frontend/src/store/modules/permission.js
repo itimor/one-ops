@@ -191,4 +191,8 @@ export const componentsMap = {
   idc: () => import('@/views/cmdb/idc'),
   hostgroup: () => import('@/views/cmdb/hostgroup'),
   host: () => import('@/views/cmdb/host'),
+
+  // jenkins_tasks
+  task: () => import('@/views/jenkins_task/task'),
+  tasklog: () => import('@/views/jenkins_task/tasklog'),
 }

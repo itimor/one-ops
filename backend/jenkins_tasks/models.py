@@ -5,7 +5,7 @@ from django.db import models
 from common.models import BaseModel
 
 
-# name 初始化主机， 主机释放
+# name 创建主机， 主机释放
 class Task(BaseModel):
     name = models.CharField(max_length=64, unique=True, verbose_name='名称')
     code = models.CharField(max_length=64, unique=True, verbose_name='code')

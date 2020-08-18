@@ -7,6 +7,7 @@ from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator, OriginValidator
 from chats.consumers import ChatConsumer
 from cmdbs.consumers import CmdConsumer
+from jenkins_tasks.consumers import JenkingLogConsumer
 
 application = ProtocolTypeRouter({
     # Empty for now (http->django views is added by default)
@@ -19,6 +20,7 @@ application = ProtocolTypeRouter({
                     # str_path
                     re_path(r'^ws/chat/(?P<group_name>[\w-]+)', ChatConsumer),
                     re_path(r'^ws/shell/(?P<cid>[\w-]+)', CmdConsumer),
+                    re_path(r'^ws/jenkins/(?P<build_name>[\w-]+)/(?P<build_id>[\w-]+)', JenkingLogConsumer),
                 ]
             )
         )

@@ -9,7 +9,7 @@ import subprocess
 
 
 async def send_msg(ws):
-    obj = {"cmd": 'ping www.google.com'}
+    obj = {"build_name": 'aaa', 'build_id': 4}
     await ws.send(json.dumps(obj))
     recv_text = await ws.recv()
     print(f"{recv_text}")
@@ -36,8 +36,8 @@ async def send_result(ws):
 
 # 客户端主逻辑
 async def main():
-    async with websockets.connect('ws://127.0.0.1:8000/ws/shell/aaa') as ws:
-        await send_result(ws)
+    async with websockets.connect('ws://127.0.0.1:8000/ws/jenkins/aaa/4') as ws:
+        await send_msg(ws)
 
 
 asyncio.get_event_loop().run_until_complete(main())

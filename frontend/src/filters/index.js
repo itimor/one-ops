@@ -138,3 +138,14 @@ export function ASSET_TYPEFilter(val) {
   }
   return Map[val]
 }
+
+// 按钮
+export function OS_TYPEFilter(val) {
+  const Map = {
+    1: "centos",
+    2: "windows",
+    3: "debian",
+    4: "other",
+  }
+  return Map[val]
+}
