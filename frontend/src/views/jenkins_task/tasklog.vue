@@ -38,7 +38,11 @@
     >
       <el-table-column label="名称" prop="name"></el-table-column>
       <el-table-column label="code" prop="code"></el-table-column>
-      <el-table-column label="构建参数" prop="build_id"></el-table-column>
+      <el-table-column label="构建id" prop="build_id">
+        <template slot-scope="{ row }">
+          <el-tag>#{{row.build_id}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="状态" prop="status"></el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
@@ -154,6 +158,8 @@ export default {
         code: [{ required: true, message: "请输入code", trigger: "blur" }],
       },
       showlog: false,
+      ws_uri: "/ws/jenkins/",
+      results: [],
     };
   },
   computed: {},
@@ -268,11 +274,80 @@ export default {
       });
     },
     handleShowlog(row) {
-      this.temp = row;
       this.showlog = true;
+      this.initWebSocket(row.code, row.build_id);
+    },
+    scrollToBottom() {
+      //  在页面加载时让信息滚动到最下面
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+        setTimeout(() => {
+          this.$refs.list_message.scrollTop = this.$refs.list_message.scrollHeight;
+        }, 0);
       });
+    },
+    reconnect() {
+      console.log("尝试重连");
+      if (this.lockReconnect || this.maxReconnect <= 0) {
+        return;
+      }
+      setTimeout(() => {
+        // this.maxReconnect-- // 不做限制
+        this.initWebSocket();
+      }, 60 * 1000);
+    },
+    initWebSocket(build_name, build_id) {
+      //初始化weosocket
+      try {
+        if ("WebSocket" in window) {
+          const ws_scheme =
+            window.location.protocol == "https:" ? "wss://" : "ws://";
+          const ws_host =
+            process.env.NODE_ENV === "development"
+              ? "127.0.0.1:8000"
+              : window.location.host;
+          const ws_url =
+            ws_scheme + ws_host + this.ws_uri + build_name + "/" + build_id;
+          console.log(ws_url);
+          this.socket = new WebSocket(ws_url);
+        } else {
+          console.log("您的浏览器不支持websocket");
+        }
+        this.socket.onopen = this.websocketonopen;
+        this.socket.onerror = this.websocketonerror;
+        this.socket.onmessage = this.websocketonmessage;
+        this.socket.onclose = this.websocketclose;
+      } catch (e) {
+        console.log(e);
+        // this.reconnect();
+      }
+    },
+    websocketonopen() {
+      //连接建立之后执行send方法发送数据
+      console.log("WebSocket连接成功", this.socket.readyState);
+      this.websocketsend();
+    },
+    websocketonerror(e) {
+      //连接建立失败重连
+      console.log("WebSocket连接发生错误", e);
+      // this.reconnect();
+    },
+    websocketonmessage(e) {
+      //数据接收
+      const data = JSON.parse(e.data);
+      this.results.push(data["text"]);
+      // console.log("得到响应", data);
+      // 消息获取成功，重置心跳
+      this.scrollToBottom();
+    },
+    websocketclose(e) {
+      //关闭连接
+      console.log("ws连接已断开 (" + e.code + ")");
+      // this.reconnect();
+      this.getList();
+    },
+    websocketsend() {
+      //数据发送
+      this.socket.send(JSON.stringify(this.temp));
     },
   },
 };

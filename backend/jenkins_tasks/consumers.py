@@ -19,7 +19,7 @@ class JenkingLogConsumer(WebsocketConsumer):
     def receive(self, text_data):
         # 实时输出
         a = jj.get_job(self.build_name).get_build(self.build_id)
-        print(a)
+        # status = a.is_running()
         for line in a.stream_logs():
             obj = {"text": line.strip()}
             self.send(text_data=json.dumps(obj))

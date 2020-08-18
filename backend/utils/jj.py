@@ -11,6 +11,7 @@ jenkins_info = {
 jj = Jenkins(baseurl=jenkins_info['baseurl'], username=jenkins_info['username'], password=jenkins_info['password'])
 
 if __name__ == '__main__':
-    a = jj.get_job('aaa').get_build(2)
+    a = jj.get_job('aaa').get_build(6)
+    print(a.stream_logs())
     for i in a.stream_logs():
         print(i)
