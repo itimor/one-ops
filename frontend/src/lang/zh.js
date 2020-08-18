@@ -25,7 +25,9 @@ export default {
     idc: '机房',
     hostgroup: '主机组',
     host: '主机',
-    inithost: '初始化主机',
+    job: 'jenkins任务',
+    task: '任务管理',
+    tasklog: '任务日志',
   },
   navbar: {
     logOut: '退出登录',

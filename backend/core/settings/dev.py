@@ -73,3 +73,14 @@ CHANNEL_LAYERS = {
         },
     }
 }
+
+
+# 长时间并耗时，后期需要查看日志的任务放jenkins
+from jenkinsapi.jenkins import Jenkins
+
+jenkins_info = {
+    'baseurl': 'http://jenkins.xxoo.com',
+    'username': 'admin',
+    'password': '11871bd159bd19da9ab624d161c569e3c8'
+}
+jj = Jenkins(baseurl=jenkins_info['baseurl'], username=jenkins_info['username'], password=jenkins_info['password'])

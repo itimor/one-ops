@@ -24,8 +24,6 @@ export const chatgroup = new Request('/chat/chatgroup/')
 export const chatmessage = new Request('/chat/chatmessage/')
 
 // cmdbs
-import * as cmdbs from '@/api/cmdb'
-export const c_cmdb = cmdbs
 export const idc = new Request('/cmdb/idc/')
 export const hostgroup = new Request('/cmdb/hostgroup/')
 export const host = new Request('/cmdb/host/')

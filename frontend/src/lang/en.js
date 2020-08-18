@@ -25,7 +25,9 @@ export default {
     idc: 'idc',
     hostgroup: 'hostgroup',
     host: 'host',
-    inithost: 'inithost',
+    job: 'job',
+    task: 'task',
+    tasklog: 'tasklog',
   },
   navbar: {
     logOut: 'Log Out',

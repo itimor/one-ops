@@ -7,7 +7,6 @@ from django.conf.urls.static import static
 from django.views.generic.base import TemplateView
 from core import settings
 
-
 urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
               [
                   # django管理后台
@@ -22,6 +21,8 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
                   url(r'api/chat/', include(('chats.urls', 'chats'), namespace="chats")),
                   # 执行命令
                   url(r'api/cmdb/', include(('cmdbs.urls', 'cmdbs'), namespace="cmdbs")),
+                  # jenkins任务
+                  url(r'api/jenkins/', include(('jenkins_tasks.urls', 'jenkins_tasks'), namespace="jenkins_tasks")),
               ]
 
 if settings.APP_ENV == 'prod':

@@ -20,7 +20,7 @@ def gogobar(log_path, log_name, hostname, ip, monitor_node=None):
     ssh.cmd('useradd %s' % user)
     ssh.cmd('mkdir /home/%s/.ssh' % user)
     log.info("传输秘钥")
-    ssh.upload('/data/scripts/%s_authorized_keys' % user, '/home/%s/.ssh/authorized_keys' % user)
+    # ssh.upload('/data/scripts/%s_authorized_keys' % user, '/home/%s/.ssh/authorized_keys' % user)
     ssh.cmd('chmod -R 700 /home/{}/.ssh && chown {}.{} -R /home/{}/.ssh && chmod -R 600 /home/{}/.ssh/authorized_keys'.format(user, user, user, user, user))
     ssh.cmd("grep {} /etc/sudoers || echo '%{}    ALL=(ALL)       NOPASSWD: ALL,!/bin/su,!/usr/bin/passwd' >>/etc/sudoers".format(user, user))
     # 新建普通用户，并传输秘钥
@@ -30,7 +30,7 @@ def gogobar(log_path, log_name, hostname, ip, monitor_node=None):
     ssh.cmd('useradd %s' % user)
     ssh.cmd('mkdir /home/%s/.ssh' % user)
     log.info("传输秘钥")
-    ssh.upload('/data/scripts/%s_authorized_keys' % user, '/home/%s/.ssh/authorized_keys' % user)
+    # ssh.upload('/data/scripts/%s_authorized_keys' % user, '/home/%s/.ssh/authorized_keys' % user)
     ssh.cmd('chmod -R 700 /home/{}/.ssh && chown {}.{} -R /home/{}/.ssh && chmod -R 600 /home/{}/.ssh/authorized_keys'.format(user, user, user, user, user))
 
     # 加入ansible tmp
@@ -44,7 +44,7 @@ def gogobar(log_path, log_name, hostname, ip, monitor_node=None):
 
     # 传递初始化脚本
     log.info("传递初始化脚本")
-    ssh.upload('/data/scripts/os_init.sh', '/root/os_init.sh')
+    # ssh.upload('/data/scripts/os_init.sh', '/root/os_init.sh')
     log.warning("目标机器执行初始化脚本， 此过程耗时较长")
     # ssh.cmd('bash /root/os_init.sh {} {}'.format(hostname, monitor_node))
 

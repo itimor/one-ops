@@ -3,11 +3,6 @@
 
 from cmdbs.serializers import *
 from common.views import ModelViewSet, JsonResponse
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from utils.index import gen_time_pid
-from celery_tasks.tasks import init_host
-from utils.init_host import gogobar
 
 
 class HistoryViewSet(ModelViewSet):
@@ -41,33 +36,3 @@ class HostViewSet(ModelViewSet):
         if self.action in ['list', 'retrieve'] or self.resultData:
             return HostReadSerializer
         return HostSerializer
-
-
-from utils.init_host import gogobar
-
-
-async def init_host(log_path, log_name, hosts, monitor_node):
-    for host in hosts:
-        hostname = host['hostname']
-        ip = host['ip']
-        await gogobar(log_path, log_name, hostname, ip, monitor_node)
-
-
-class inithost(APIView):
-    """初始化主机"""
-
-    def post(self, request, *args, **kwargs):
-        ret = {'code': 20000, 'msg': "success"}
-        log_path = 'cmdb_log'
-        log_name = gen_time_pid('inithost')
-        hosts = request.data["hosts"]
-        monitor_node = "aa"
-        # for host in hosts:
-        #     print(hosts)
-        #     hostname = host['hostname']
-        #     ip = host['ip']
-        #     gogobar(log_path, log_name, hostname, ip, monitor_node)
-        init_host(log_path, log_name, hosts, monitor_node)
-        # init_host.delay(log_path, log_name, hosts, monitor_node)
-        ret['results'] = {"log_path": log_path, "log_name": log_name}
-        return Response(ret)
