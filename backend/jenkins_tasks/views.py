@@ -11,8 +11,8 @@ from rest_framework.decorators import action
 class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    search_fields = ['name']
-    filter_fields = ['id', 'name']
+    search_fields = ['name', 'code']
+    filter_fields = ['id', 'name', 'code']
 
     # send
     @action(methods=['post'], url_path='send', detail=False)
@@ -41,3 +41,10 @@ class TaskViewSet(ModelViewSet):
         return JsonResponse(OrderedDict([
             ('results', data)
         ], code=status.HTTP_200_OK))
+
+
+class TaskLogViewSet(ModelViewSet):
+    queryset = TaskLog.objects.all()
+    serializer_class = TaskLogSerializer
+    search_fields = ['name', 'code']
+    filter_fields = ['build_id', 'name', 'code']
