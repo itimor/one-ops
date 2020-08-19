@@ -149,3 +149,14 @@ export function OS_TYPEFilter(val) {
   }
   return Map[val]
 }
+
+// 按钮
+export function STATUS_TYPEFilter(val) {
+  const Map = {
+    1: "RUNNING",
+    2: "SUCCESS",
+    3: "ABORTED",
+    4: "FAILURE",
+  }
+  return Map[val]
+}

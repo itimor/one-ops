@@ -59,6 +59,12 @@
               type="danger"
               @click="handleDelete(row)"
             >{{ "删除" }}</el-button>
+            <el-button
+              v-if="permissionList.update"
+              size="small"
+              type="warning"
+              @click="handleStart(row)"
+            >{{ "启动任务" }}</el-button>
           </el-button-group>
         </template>
       </el-table-column>
@@ -106,6 +112,12 @@
         >{{ "确定" }}</el-button>
       </div>
     </el-dialog>
+
+    <el-drawer :visible.sync="showstart" :with-header="false" size="30%">
+      <div>
+        <p>哇啊哇</p>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -153,6 +165,7 @@ export default {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
         code: [{ required: true, message: "请输入code", trigger: "blur" }],
       },
+      showstart: false,
     };
   },
   computed: {},
@@ -287,6 +300,10 @@ export default {
             message: "已取消删除",
           });
         });
+    },
+    handleStart(row) {
+      this.temp = row;
+      this.showstart = true;
     },
   },
 };

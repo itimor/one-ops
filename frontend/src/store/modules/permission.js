@@ -195,4 +195,5 @@ export const componentsMap = {
   // jenkins_tasks
   task: () => import('@/views/jenkins_task/task'),
   tasklog: () => import('@/views/jenkins_task/tasklog'),
+  aaa: () => import('@/views/jenkins_task/aaa'),
 }

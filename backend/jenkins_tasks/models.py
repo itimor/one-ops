@@ -20,9 +20,10 @@ class Task(BaseModel):
 
 
 STATUS_TYPE = {
-    1: "running",
-    2: "success",
-    3: "error",
+    1: "RUNNING",
+    2: "SUCCESS",
+    3: "ABORTED",
+    4: "FAILURE",
 }
 
 

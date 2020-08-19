@@ -43,7 +43,14 @@
           <el-tag>#{{row.build_id}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="状态" prop="status"></el-table-column>
+      <el-table-column label="状态" prop="status">
+        <template slot-scope="{ row }">
+          <el-tag v-if="row.status==1" type="success">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==2">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==3" type="warning">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==4" type="danger">{{row.status|STATUS_TYPEFilter}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button-group>
@@ -91,7 +98,7 @@
         <el-form-item label="code" prop="code">
           <el-input v-model="temp.code" />
         </el-form-item>
-        <el-form-item label="构建参数" prop="build_id">
+        <el-form-item label="构建id" prop="build_id">
           <el-input v-model="temp.build_id" />
         </el-form-item>
         <el-form-item label="备注" prop="memo">
@@ -344,7 +351,7 @@ export default {
       this.results.push(data["text"]);
       // console.log("得到响应", data);
       // 消息获取成功，重置心跳
-      this.scrollToBottom()
+      this.scrollToBottom();
     },
     websocketclose(e) {
       //关闭连接
