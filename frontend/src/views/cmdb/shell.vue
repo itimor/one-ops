@@ -8,7 +8,7 @@
               <span>[root@localhost ~]#</span>
               <input type="text" v-model="temp.cmd" @keyup="onKeyup" placeholder="输入命令" />
             </div>
-            <p v-for="item in results" :key="item">{{item}}</p>
+            <p v-for="(item, index) in results" :key="index">{{item}}</p>
           </div>
         </el-col>
         <el-col :span="6">
@@ -104,9 +104,11 @@ export default {
         date.getMilliseconds().toString().length < 3
           ? "0" + date.getMilliseconds()
           : date.getMilliseconds();
-      const groupname = m + "-" + s + "-" + ms;
-      this.results = [];
-      this.initWebSocket(groupname);
+      if (this.socket != null) {
+        this.results = [];
+        this.socket.close();
+      }
+      this.initWebSocket();
     },
     reconnect() {
       console.log("尝试重连");
@@ -118,7 +120,7 @@ export default {
         this.initWebSocket();
       }, 60 * 1000);
     },
-    initWebSocket(groupname) {
+    initWebSocket() {
       //初始化weosocket
       try {
         if ("WebSocket" in window) {
@@ -128,7 +130,7 @@ export default {
             process.env.NODE_ENV === "development"
               ? "127.0.0.1:8000"
               : window.location.host;
-          const ws_url = ws_scheme + ws_host + this.ws_uri + groupname;
+          const ws_url = ws_scheme + ws_host + this.ws_uri;
           console.log(ws_url);
           this.socket = new WebSocket(ws_url);
         } else {

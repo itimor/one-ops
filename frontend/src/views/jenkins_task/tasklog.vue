@@ -107,8 +107,10 @@
       </div>
     </el-dialog>
 
-    <el-drawer title="我是标题" :visible.sync="showlog" :with-header="false">
-      <span>我来啦!</span>
+    <el-drawer :visible.sync="showlog" :with-header="false" size="30%">
+      <div class="showlog" ref="showlog">
+        <p v-for="(item, index) in results" :key="index">{{item}}</p>
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -160,6 +162,7 @@ export default {
       showlog: false,
       ws_uri: "/ws/jenkins/",
       results: [],
+      socket: null,
     };
   },
   computed: {},
@@ -273,17 +276,18 @@ export default {
         }
       });
     },
-    handleShowlog(row) {
-      this.showlog = true;
-      this.initWebSocket(row.code, row.build_id);
-    },
     scrollToBottom() {
       //  在页面加载时让信息滚动到最下面
       this.$nextTick(() => {
         setTimeout(() => {
-          this.$refs.list_message.scrollTop = this.$refs.list_message.scrollHeight;
+          this.$refs.showlog.scrollTop = this.$refs.showlog.scrollHeight;
         }, 0);
       });
+    },
+    handleShowlog(row) {
+      this.temp = row;
+      this.showlog = true;
+      this.initWebSocket();
     },
     reconnect() {
       console.log("尝试重连");
@@ -295,7 +299,7 @@ export default {
         this.initWebSocket();
       }, 60 * 1000);
     },
-    initWebSocket(build_name, build_id) {
+    initWebSocket() {
       //初始化weosocket
       try {
         if ("WebSocket" in window) {
@@ -305,9 +309,12 @@ export default {
             process.env.NODE_ENV === "development"
               ? "127.0.0.1:8000"
               : window.location.host;
-          const ws_url =
-            ws_scheme + ws_host + this.ws_uri + build_name + "/" + build_id;
-          console.log(ws_url);
+          const ws_url = ws_scheme + ws_host + this.ws_uri;
+
+          if (this.socket != null) {
+            this.results = [];
+            this.socket.close();
+          }
           this.socket = new WebSocket(ws_url);
         } else {
           console.log("您的浏览器不支持websocket");
@@ -337,13 +344,13 @@ export default {
       this.results.push(data["text"]);
       // console.log("得到响应", data);
       // 消息获取成功，重置心跳
-      this.scrollToBottom();
+      this.scrollToBottom()
     },
     websocketclose(e) {
       //关闭连接
       console.log("ws连接已断开 (" + e.code + ")");
       // this.reconnect();
-      this.getList();
+      // this.getList();
     },
     websocketsend() {
       //数据发送
@@ -352,3 +359,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.showlog {
+  padding: 10px;
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+</style>

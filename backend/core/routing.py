@@ -19,8 +19,8 @@ application = ProtocolTypeRouter({
                     # re_path(r'^chat/(?P<room_name>[0-9]{1,4})/$', ChatConsumer),
                     # str_path
                     re_path(r'^ws/chat/(?P<group_name>[\w-]+)', ChatConsumer),
-                    re_path(r'^ws/shell/(?P<cid>[\w-]+)', CmdConsumer),
-                    re_path(r'^ws/jenkins/(?P<build_name>[\w-]+)/(?P<build_id>[\w-]+)', JenkingLogConsumer),
+                    re_path(r'^ws/shell/', CmdConsumer),
+                    re_path(r'^ws/jenkins/', JenkingLogConsumer),
                 ]
             )
         )
