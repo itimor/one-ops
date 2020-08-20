@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         topmenu = Menu.objects.get(name='top', code='top')
         self.stdout.write(self.style.SUCCESS('############ 初始化jenkins菜单 ###########'))
-        basemenu = Menu.objects.create(name='job管理', code='job', curl='/job', icon='job', sequence=2, type=1,
+        basemenu = Menu.objects.create(name='jenkins任务', code='jenkins', curl='/jenkins', icon='jenkins', sequence=2, type=1,
                                          parent=topmenu)
         menumodel = Menu.objects.create(name='任务', code='task', curl='/task', icon='task', sequence=10, type=2,
                                         parent=basemenu)
@@ -25,7 +25,10 @@ class Command(BaseCommand):
         menumodel = Menu.objects.create(name='创建机器', code='createvm', curl='/createvm', icon='createvm', sequence=40, type=2,
                                         parent=basemenu)
         init_menu(menumodel)
-        menumodel = Menu.objects.create(name='下线主机', code='destoryvm', curl='/destoryvm', icon='destoryvm', sequence=50, type=2,
+        menumodel = Menu.objects.create(name='初始化主机', code='initvm', curl='/initvm', icon='initvm', sequence=50, type=2,
+                                        parent=basemenu)
+        init_menu(menumodel)
+        menumodel = Menu.objects.create(name='下线主机', code='destoryvm', curl='/destoryvm', icon='destoryvm', sequence=60, type=2,
                                         parent=basemenu)
         init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

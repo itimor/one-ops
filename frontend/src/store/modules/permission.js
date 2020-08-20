@@ -195,5 +195,8 @@ export const componentsMap = {
   // jenkins_tasks
   task: () => import('@/views/jenkins_task/task'),
   tasklog: () => import('@/views/jenkins_task/tasklog'),
+  aaa: () => import('@/views/jenkins_task/aaa'),
   createvm: () => import('@/views/jenkins_task/createvm'),
+  destoryvm: () => import('@/views/jenkins_task/destoryvm'),
+  initvm: () => import('@/views/jenkins_task/initvm'),
 }
