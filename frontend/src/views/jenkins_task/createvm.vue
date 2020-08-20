@@ -5,11 +5,11 @@
         <span class="title">
           <svg-icon icon-class="base" />创建主机
         </span>
-        <div class="action">
-          <el-button type="primary" @click="backStep">上一步</el-button>
-          <el-button v-if="active<3" type="success" @click="nextStep">下一步</el-button>
-          <el-button v-else type="danger" @click="nextStep">开始创建</el-button>
-        </div>
+        <sticky :sticky-top="85">
+          <div class="action">
+            <el-button type="primary" @click="handleCreate">开始创建</el-button>
+          </div>
+        </sticky>
       </div>
       <div>
         <el-row :gutter="20">
@@ -21,10 +21,8 @@
               label-position="left"
               label-width="120px"
             >
-              <el-divider content-position="left" class="heng">
-                基础配置
-              </el-divider>
-              <template v-if="active==1">
+              <el-divider content-position="left" class="heng">基础配置</el-divider>
+              <template>
                 <el-form-item label="主机名" prop="hostname">
                   <el-input v-model="temp.hostname" />
                 </el-form-item>
@@ -60,7 +58,7 @@
                 </el-form-item>
               </template>
               <el-divider content-position="left" class="heng">网络配置</el-divider>
-              <template v-if="active==1">
+              <template>
                 <el-form-item label="所在vcenter" prop="vcenter">
                   <el-input v-model="temp.vcenter" />
                 </el-form-item>
@@ -138,6 +136,7 @@
 
 <script>
 import { host, idc, hostgroup, auth } from "@/api/all";
+import Sticky from "@/components/Sticky";
 
 import {
   checkAuthAdd,
@@ -148,6 +147,8 @@ import {
 
 export default {
   name: "aaa",
+  components: { Sticky },
+
   data() {
     return {
       operationList: [],
@@ -206,7 +207,6 @@ export default {
         1500: "1.5T",
         2000: "2",
       },
-      active: 1,
       namemarks: {
         1: "基础配置",
         2: "网络配置",
@@ -224,14 +224,14 @@ export default {
         vcenter: null,
         os: "1",
         cpu: null,
-        cpu_num: "2",
-        memory: "4",
-        sys_disk: "300",
-        data_disk: "300",
+        cpu_num: 4,
+        memory: 8,
+        sys_disk: 300,
+        data_disk: 500,
         other_disk: null,
         datastore: null,
         asset_type: "2",
-        status: 1,
+        status: "1",
         memo: "",
       },
     };
@@ -267,12 +267,10 @@ export default {
         this.idc_list = response.results;
       });
     },
-    backStep() {
-      if (this.active-- < 1) this.active = 1;
+    handleCreate() {
+     console.log(123)
     },
-    nextStep() {
-      if (this.active++ > 2) this.active = 1;
-    },
+  
   },
 };
 </script>
