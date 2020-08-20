@@ -1,18 +1,9 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span class="title" v-if="active==1">
-          <svg-icon icon-class="base" />
-          {{namemarks[active]}}
-        </span>
-        <span class="title" v-if="active==2">
-          <svg-icon icon-class="spec" />
-          {{namemarks[active]}}
-        </span>
-        <span class="title" v-if="active==3">
-          <svg-icon icon-class="network" />
-          {{namemarks[active]}}
+      <div class="clearfix">
+        <span class="title">
+          <svg-icon icon-class="base" />创建主机
         </span>
         <div class="action">
           <el-button type="primary" @click="backStep">上一步</el-button>
@@ -30,6 +21,9 @@
               label-position="left"
               label-width="120px"
             >
+              <el-divider content-position="left" class="heng">
+                基础配置
+              </el-divider>
               <template v-if="active==1">
                 <el-form-item label="主机名" prop="hostname">
                   <el-input v-model="temp.hostname" />
@@ -65,7 +59,8 @@
                   </el-select>
                 </el-form-item>
               </template>
-              <template v-if="active==2">
+              <el-divider content-position="left" class="heng">网络配置</el-divider>
+              <template v-if="active==1">
                 <el-form-item label="所在vcenter" prop="vcenter">
                   <el-input v-model="temp.vcenter" />
                 </el-form-item>
@@ -85,7 +80,8 @@
                   <el-input v-model="temp.dns" />
                 </el-form-item>
               </template>
-              <template v-if="active==3">
+              <el-divider content-position="left" class="heng">规格配置</el-divider>
+              <template>
                 <el-form-item label="cpu个数" prop="cpu_num">
                   <el-slider
                     v-model="temp.cpu_num"
@@ -289,6 +285,9 @@ export default {
   .action {
     float: right;
     margin: 2px;
+  }
+  .heng {
+    background-color: #ed7107;
   }
 }
 </style>
