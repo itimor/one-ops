@@ -28,7 +28,7 @@ export default {
     jenkins: 'jenkins',
     task: 'task',
     tasklog: 'tasklog',
-    aaa: 'aaa',
+    ping: 'ping',
     createvm: 'createvm',
     initvm: 'initvm',
     destoryvm: 'destoryvm',

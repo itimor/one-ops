@@ -3,11 +3,11 @@
     <el-card class="box-card">
       <div class="clearfix">
         <span class="title">
-          <svg-icon icon-class="base" />创建主机
+          <svg-icon icon-class="base" />ping测试
         </span>
         <sticky :sticky-top="85">
           <div class="action">
-            <el-button type="primary" @click="handleCreate">开始初始化</el-button>
+            <el-button type="primary" @click="handleCreate">开始构建</el-button>
           </div>
         </sticky>
       </div>
@@ -21,10 +21,13 @@
               label-position="left"
               label-width="120px"
             >
-              <el-divider content-position="left" class="heng">填入主机信息</el-divider>
+              <el-divider content-position="left" class="heng">选择参数</el-divider>
               <template>
-                <el-form-item prop="hosts">
-                  <el-input v-model="temp.hosts" />
+                <el-form-item prop="num">
+                  <el-radio-group v-model="temp.num">
+                    <el-radio :label="100">100</el-radio>
+                    <el-radio :label="500">500</el-radio>
+                  </el-radio-group>
                 </el-form-item>
               </template>
             </el-form>
@@ -66,10 +69,10 @@ export default {
       },
       temp: {},
       rules: {
-        hosts: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        num: [{ required: true, message: "请输入名称", trigger: "blur" }],
       },
       temp: {
-        hosts: "",
+        num: 100,
       },
     };
   },

@@ -28,7 +28,7 @@ export default {
     jenkins: 'jenkins任务',
     task: '任务管理',
     tasklog: '任务日志',
-    aaa: '测试任务',
+    ping: 'ping测试',
     createvm: '创建主机',
     initvm: '初始化主机',
     destoryvm: '下线主机',

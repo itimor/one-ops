@@ -19,7 +19,7 @@ class Command(BaseCommand):
         menumodel = Menu.objects.create(name='任务日志', code='tasklog', curl='/tasklog', icon='tasklog', sequence=20, type=2,
                                         parent=basemenu)
         init_menu(menumodel)
-        menumodel = Menu.objects.create(name='测试任务', code='aaa', curl='/aaa', icon='list', sequence=30, type=2,
+        menumodel = Menu.objects.create(name='ping测试', code='ping', curl='/ping', icon='ping', sequence=30, type=2,
                                         parent=basemenu)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='创建机器', code='createvm', curl='/createvm', icon='createvm', sequence=40, type=2,
