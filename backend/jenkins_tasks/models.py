@@ -34,7 +34,7 @@ class TaskLog(BaseModel):
     code = models.CharField(max_length=64, verbose_name='code')
     build_id = models.CharField(max_length=64, unique=True, verbose_name='构建id')
     params = models.TextField(null=True, blank=True, verbose_name='一推参数')
-    status = models.CharField(choices=tuple(STATUS_TYPE.items()), default=1, max_length=1, verbose_name="状态")
+    status = models.CharField(choices=tuple(STATUS_TYPE.items()), default=2, max_length=1, verbose_name="状态")
 
     def __str__(self):
         return self.name

@@ -49,7 +49,6 @@
           <el-button-group>
             <el-button
               v-if="permissionList.update"
-              :disabled="row.status==1"
               size="small"
               type="warning"
               @click="handleShowlog(row)"
@@ -153,10 +152,8 @@ export default {
           return item.status;
         });
         if (job_status.indexOf(1) > -1 || job_status.indexOf(2) > -1) {
-          console.log("start flush status!");
           this.check_job_status = setInterval(() => {
             c_jenkins.flush().then((response) => {
-              console.log(response);
               if (response.results.count === 0) {
                 this.getList();
                 clearInterval(this.check_job_status);

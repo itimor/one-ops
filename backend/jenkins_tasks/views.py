@@ -64,7 +64,7 @@ class TaskLogViewSet(ModelViewSet):
                 job_build = job.get_build(int(j.build_id))
                 j_status = job_build.is_running()
                 if j_status is None:
-                    j.status = 1
+                    j.status = 2
                     j.save()
                     continue
                 if j_status:
@@ -77,7 +77,7 @@ class TaskLogViewSet(ModelViewSet):
                         j.status = 4
                     j.save()
             except:
-                j.status = 1
+                j.status = 2
                 j.save()
 
         data = {'code': 20000, 'count': len(tasks)}
