@@ -153,10 +153,11 @@ export function OS_TYPEFilter(val) {
 // 按钮
 export function STATUS_TYPEFilter(val) {
   const Map = {
-    1: "RUNNING",
-    2: "SUCCESS",
-    3: "ABORTED",
-    4: "FAILURE",
+    1: "PENDING",
+    2: "RUNNING",
+    3: "SUCCESS",
+    4: "ABORTED",
+    5: "FAILURE",
   }
   return Map[val]
 }

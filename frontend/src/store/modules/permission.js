@@ -149,7 +149,8 @@ function generateRouter(item, isParent) {
     path: item.path,
     name: item.name,
     meta: item.meta,
-    noCache: item.no_cache,
+    // noCache: item.no_cache,
+    noCache: false,
     activeMenu: item.active_menu,
     hidden: item.hidden,
     // component: isParent ? Layout : () => import(item.component) // 这个不可以

@@ -25,6 +25,7 @@
               <template>
                 <el-form-item prop="num">
                   <el-radio-group v-model="temp.num">
+                    <el-radio :label="10">10</el-radio>
                     <el-radio :label="100">100</el-radio>
                     <el-radio :label="500">500</el-radio>
                   </el-radio-group>
@@ -44,7 +45,7 @@
 </template>
 
 <script>
-import { host, idc, hostgroup, auth } from "@/api/all";
+import { c_jenkins, auth } from "@/api/all";
 import Sticky from "@/components/Sticky";
 
 import {
@@ -72,7 +73,7 @@ export default {
         num: [{ required: true, message: "请输入名称", trigger: "blur" }],
       },
       temp: {
-        num: 100,
+        num: 10,
       },
     };
   },
@@ -97,7 +98,10 @@ export default {
         });
     },
     handleCreate() {
-      console.log(123);
+      c_jenkins.ping(this.temp).then((response) => {
+        console.log(response);
+        this.$router.push("/tasklog")
+      });
     },
   },
 };

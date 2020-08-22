@@ -30,5 +30,7 @@ export const host = new Request('/cmdb/host/')
 export const history = new Request('/cmdb/history/')
 
 // jenkins_tasks
+import * as jenkins from '@/api/jenkins'
+export const c_jenkins = jenkins
 export const task = new Request('/jenkins/task/')
 export const tasklog = new Request('/jenkins/tasklog/')

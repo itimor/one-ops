@@ -6,6 +6,8 @@ from common.views import ModelViewSet, JsonResponse
 from common import status
 from collections import OrderedDict
 from rest_framework.decorators import action
+from core.settings import jj
+from django.db.models import Q
 
 
 class TaskViewSet(ModelViewSet):
@@ -14,30 +16,34 @@ class TaskViewSet(ModelViewSet):
     search_fields = ['name', 'code']
     filter_fields = ['id', 'name', 'code']
 
-    # send
-    @action(methods=['post'], url_path='send', detail=False)
-    def send(self, request, *args, **kwargs):
+    @action(methods=['post'], url_path='stop', detail=False)
+    def stop(self, request, *args, **kwargs):
         self.watch_audit_log(request)
-        data = {'code': 20000, 'msg': 'null'}
-        type = request.GET['type']
-        if type == 'mail':
-            bot_name = request.GET['bot_name']
-            bot_obj = MailBot.objects.get(name=bot_name)
-            subject = "{}".format(request.form['subject'])
-            mail_to = bot_obj.to
-            mail_host = bot_obj.host
-            mail_user = '{}@{}'.format(bot_obj.user, bot_obj.host)
-            mail_pass = bot_obj.pasword
-            content = request.data.get('content', 'Hello Pornhub')
-            send_mail.delay(subject, mail_to, mail_host, mail_user, mail_pass, content)
-        elif type == 'telegram':
-            bot_name = request.GET['bot_name']
-            content = request.data.get('content', 'Hello Pornhub')
-            bot_obj = TelegramBot.objects.get(name=bot_name)
-            send_telegram.delay(chat_id=bot_obj.chat_id, text=content)
-        else:
-            pass
+        job_name = request.data['code']
+        build_id = request.data['build_id']
+        job = jj.get_job(job_name)
+        job_build = job.get_build(int(build_id))
+        s = job_build.stop()
+        print(s)
+        j = TaskLog.objects.get(code=job_name, build_id=build_id)
+        j.status = 4
+        j.save()
+        data = {'code': 20000, 'build_id': build_id}
+        return JsonResponse(OrderedDict([
+            ('results', data)
+        ], code=status.HTTP_200_OK))
 
+    @action(methods=['post'], url_path='ping', detail=False)
+    def ping(self, request, *args, **kwargs):
+        self.watch_audit_log(request)
+        job_name = 'ping'
+        num = request.data['num']
+        job = jj.get_job(job_name)
+        build_id = job.get_next_build_number()
+        params = {"num": num}
+        job.invoke(build_params=params)
+        TaskLog.objects.create(name='ping测试', code=job_name, build_id=build_id, params=params)
+        data = {'code': 20000, 'build_id': build_id}
         return JsonResponse(OrderedDict([
             ('results', data)
         ], code=status.HTTP_200_OK))
@@ -48,3 +54,33 @@ class TaskLogViewSet(ModelViewSet):
     serializer_class = TaskLogSerializer
     search_fields = ['name', 'code']
     filter_fields = ['build_id', 'name', 'code']
+
+    @action(methods=['get'], url_path='flush', detail=False)
+    def flush(self, request, *args, **kwargs):
+        tasks = TaskLog.objects.filter(Q(status=1) | Q(status=2))
+        for j in tasks:
+            job = jj.get_job(j.code)
+            try:
+                job_build = job.get_build(int(j.build_id))
+                j_status = job_build.is_running()
+                if j_status is None:
+                    j.status = 1
+                    j.save()
+                    continue
+                if j_status:
+                    j.status = 2
+                    j.save()
+                else:
+                    if job_build.is_good:
+                        j.status = 3
+                    else:
+                        j.status = 4
+                    j.save()
+            except:
+                j.status = 1
+                j.save()
+
+        data = {'code': 20000, 'count': len(tasks)}
+        return JsonResponse(OrderedDict([
+            ('results', data)
+        ], code=status.HTTP_200_OK))
