@@ -54,7 +54,7 @@
               @click="handleShowlog(row)"
             >{{ "日志" }}</el-button>
             <el-button
-              v-if="permissionList.del && row.status < 2"
+              v-if="permissionList.del && row.status < 3"
               size="small"
               type="danger"
               @click="handleStop(row)"
