@@ -38,10 +38,11 @@
       </el-table-column>
       <el-table-column label="状态" prop="status">
         <template slot-scope="{ row }">
-          <el-tag v-if="row.status==1" type="success">{{row.status|STATUS_TYPEFilter}}</el-tag>
-          <el-tag v-if="row.status==2">{{row.status|STATUS_TYPEFilter}}</el-tag>
-          <el-tag v-if="row.status==3" type="warning">{{row.status|STATUS_TYPEFilter}}</el-tag>
-          <el-tag v-if="row.status==4" type="danger">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==1" type="info">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==2" type="success">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==3">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==4" type="warning">{{row.status|STATUS_TYPEFilter}}</el-tag>
+          <el-tag v-if="row.status==5" type="danger">{{row.status|STATUS_TYPEFilter}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
