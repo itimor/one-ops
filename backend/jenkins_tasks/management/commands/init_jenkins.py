@@ -20,15 +20,15 @@ class Command(BaseCommand):
                                         parent=basemenu)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='ping测试', code='ping', curl='/ping', icon='ping', sequence=30, type=2,
-                                        parent=basemenu)
+                                        hidden=True, active_menu='/task', parent=basemenu)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='创建机器', code='createvm', curl='/createvm', icon='createvm', sequence=40, type=2,
-                                        parent=basemenu)
+                                        hidden=True, parent=basemenu)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='初始化主机', code='initvm', curl='/initvm', icon='initvm', sequence=50, type=2,
-                                        parent=basemenu)
+                                        hidden=True, parent=basemenu)
         init_menu(menumodel)
         menumodel = Menu.objects.create(name='下线主机', code='destoryvm', curl='/destoryvm', icon='destoryvm', sequence=60, type=2,
-                                        parent=basemenu)
+                                        hidden=True, parent=basemenu)
         init_menu(menumodel)
         self.stdout.write(self.style.SUCCESS('初始化完成'))

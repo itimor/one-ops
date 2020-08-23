@@ -61,6 +61,7 @@
             >{{ "删除" }}</el-button>
             <el-button
               v-if="permissionList.update"
+              :disabled="!row.status"
               size="small"
               type="warning"
               @click="handleStart(row)"
@@ -302,8 +303,7 @@ export default {
         });
     },
     handleStart(row) {
-      this.temp = row;
-      this.showstart = true;
+      this.$router.push(row.code)
     },
   },
 };

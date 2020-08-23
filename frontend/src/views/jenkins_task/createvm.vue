@@ -1,134 +1,128 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div class="clearfix">
-        <span class="title">
-          <svg-icon icon-class="base" />创建主机
-        </span>
+      <div solt="head" class="clearfix">
         <sticky :sticky-top="85">
-          <div class="action">
-            <el-button type="primary" @click="handleCreate">开始创建</el-button>
+          <div class="title">
+            <svg-icon icon-class="base" />创建主机
+            <el-button
+              class="action"
+              type="primary"
+              icon="el-icon-video-play"
+              @click="handleCreate"
+            >开始构建</el-button>
           </div>
         </sticky>
       </div>
       <div>
-        <el-row :gutter="20">
-          <el-col :span="16">
-            <el-form
-              ref="dataForm"
-              :rules="rules"
-              :model="temp"
-              label-position="left"
-              label-width="120px"
-            >
-              <el-divider content-position="left" class="heng">基础配置</el-divider>
-              <template>
-                <el-form-item label="主机名" prop="hostname">
-                  <el-input v-model="temp.hostname" />
-                </el-form-item>
-                <el-form-item label="机房" prop="idc">
-                  <el-select v-model="temp.idc" filterable placeholder="请选择机房">
-                    <el-option
-                      v-for="item in idc_list"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="类型" prop="asset_type">
-                  <el-select v-model="temp.asset_type" filterable placeholder="请选择设备类型">
-                    <el-option
-                      v-for="(label, value) in ASSET_TYPE"
-                      :key="value"
-                      :label="label"
-                      :value="value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="系统" prop="os">
-                  <el-select v-model="temp.os" filterable placeholder="请选择系统版本">
-                    <el-option
-                      v-for="(label, value) in OS_TYPE"
-                      :key="value"
-                      :label="label"
-                      :value="value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </template>
-              <el-divider content-position="left" class="heng">网络配置</el-divider>
-              <template>
-                <el-form-item label="所在vcenter" prop="vcenter">
-                  <el-input v-model="temp.vcenter" />
-                </el-form-item>
-                <el-form-item label="所在datastore" prop="datastore">
-                  <el-input v-model="temp.datastore" />
-                </el-form-item>
-                <el-form-item label="ip" prop="ip">
-                  <el-input v-model="temp.ip" />
-                </el-form-item>
-                <el-form-item label="子网掩码" prop="netmask">
-                  <el-input v-model="temp.netmask" />
-                </el-form-item>
-                <el-form-item label="网关" prop="gateway">
-                  <el-input v-model="temp.gateway" />
-                </el-form-item>
-                <el-form-item label="dns" prop="dns">
-                  <el-input v-model="temp.dns" />
-                </el-form-item>
-              </template>
-              <el-divider content-position="left" class="heng">规格配置</el-divider>
-              <template>
-                <el-form-item label="cpu个数" prop="cpu_num">
-                  <el-slider
-                    v-model="temp.cpu_num"
-                    :min="2"
-                    :max="16"
-                    :step="1"
-                    :marks="cpumarks"
-                    show-input
-                  ></el-slider>
-                </el-form-item>
-                <el-form-item label="内存大小" prop="memory">
-                  <el-slider
-                    v-model="temp.memory"
-                    :min="4"
-                    :max="64"
-                    :step="4"
-                    :marks="memmarks"
-                    show-input
-                  ></el-slider>
-                </el-form-item>
-                <el-form-item label="系统磁盘" prop="sys_disk">
-                  <el-slider
-                    v-model="temp.sys_disk"
-                    :min="300"
-                    :max="2000"
-                    :step="100"
-                    :marks="diskmarks"
-                    show-input
-                  ></el-slider>
-                </el-form-item>
-                <el-form-item label="数据磁盘" prop="data_disk">
-                  <el-slider
-                    v-model="temp.data_disk"
-                    :min="300"
-                    :max="2000"
-                    :step="100"
-                    :marks="diskmarks"
-                    show-input
-                  ></el-slider>
-                </el-form-item>
-              </template>
-            </el-form>
-          </el-col>
-          <el-col :span="8">
-            <div class="grid-content bg-purple">
-              <a>123</a>
-            </div>
-          </el-col>
-        </el-row>
+        <el-form
+          ref="dataForm"
+          :rules="rules"
+          :model="temp"
+          label-position="left"
+          label-width="120px"
+        >
+          <el-divider content-position="left" class="heng">基础配置</el-divider>
+          <template>
+            <el-form-item label="主机名" prop="hostname">
+              <el-input v-model="temp.hostname" />
+            </el-form-item>
+            <el-form-item label="机房" prop="idc">
+              <el-select v-model="temp.idc" filterable placeholder="请选择机房">
+                <el-option
+                  v-for="item in idc_list"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="类型" prop="asset_type">
+              <el-select v-model="temp.asset_type" filterable placeholder="请选择设备类型">
+                <el-option
+                  v-for="(label, value) in ASSET_TYPE"
+                  :key="value"
+                  :label="label"
+                  :value="value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="系统" prop="os">
+              <el-select v-model="temp.os" filterable placeholder="请选择系统版本">
+                <el-option
+                  v-for="(label, value) in OS_TYPE"
+                  :key="value"
+                  :label="label"
+                  :value="value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+          <el-divider content-position="left" class="heng">网络配置</el-divider>
+          <template>
+            <el-form-item label="所在vcenter" prop="vcenter">
+              <el-input v-model="temp.vcenter" />
+            </el-form-item>
+            <el-form-item label="所在datastore" prop="datastore">
+              <el-input v-model="temp.datastore" />
+            </el-form-item>
+            <el-form-item label="ip" prop="ip">
+              <el-input v-model="temp.ip" />
+            </el-form-item>
+            <el-form-item label="子网掩码" prop="netmask">
+              <el-input v-model="temp.netmask" />
+            </el-form-item>
+            <el-form-item label="网关" prop="gateway">
+              <el-input v-model="temp.gateway" />
+            </el-form-item>
+            <el-form-item label="dns" prop="dns">
+              <el-input v-model="temp.dns" />
+            </el-form-item>
+          </template>
+          <el-divider content-position="left" class="heng">规格配置</el-divider>
+          <template>
+            <el-form-item label="cpu个数" prop="cpu_num">
+              <el-slider
+                v-model="temp.cpu_num"
+                :min="2"
+                :max="16"
+                :step="1"
+                :marks="cpumarks"
+                show-input
+              ></el-slider>
+            </el-form-item>
+            <el-form-item label="内存大小" prop="memory">
+              <el-slider
+                v-model="temp.memory"
+                :min="4"
+                :max="64"
+                :step="4"
+                :marks="memmarks"
+                show-input
+              ></el-slider>
+            </el-form-item>
+            <el-form-item label="系统磁盘" prop="sys_disk">
+              <el-slider
+                v-model="temp.sys_disk"
+                :min="300"
+                :max="2000"
+                :step="100"
+                :marks="diskmarks"
+                show-input
+              ></el-slider>
+            </el-form-item>
+            <el-form-item label="数据磁盘" prop="data_disk">
+              <el-slider
+                v-model="temp.data_disk"
+                :min="300"
+                :max="2000"
+                :step="100"
+                :marks="diskmarks"
+                show-input
+              ></el-slider>
+            </el-form-item>
+          </template>
+        </el-form>
       </div>
     </el-card>
   </div>
@@ -268,24 +262,10 @@ export default {
       });
     },
     handleCreate() {
-     console.log(123)
+      console.log(123);
     },
-  
   },
 };
 </script>
 <style lang="scss" scoped>
-.box-card {
-  .title {
-    color: #ed7107;
-    font-size: 1.5em;
-  }
-  .action {
-    float: right;
-    margin: 2px;
-  }
-  .heng {
-    background-color: #ed7107;
-  }
-}
 </style>

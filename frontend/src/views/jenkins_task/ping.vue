@@ -1,44 +1,38 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div class="clearfix">
-        <span class="title">
-          <svg-icon icon-class="base" />ping测试
-        </span>
+      <div solt="head" class="clearfix">
         <sticky :sticky-top="85">
-          <div class="action">
-            <el-button type="primary" @click="handleCreate">开始构建</el-button>
+          <div class="title">
+            <svg-icon icon-class="base" />ping测试
+            <el-button
+              class="action"
+              type="primary"
+              icon="el-icon-video-play"
+              @click="handleCreate"
+            >开始构建</el-button>
           </div>
         </sticky>
       </div>
       <div>
-        <el-row :gutter="20">
-          <el-col :span="16">
-            <el-form
-              ref="dataForm"
-              :rules="rules"
-              :model="temp"
-              label-position="left"
-              label-width="120px"
-            >
-              <el-divider content-position="left" class="heng">选择参数</el-divider>
-              <template>
-                <el-form-item prop="num">
-                  <el-radio-group v-model="temp.num">
-                    <el-radio :label="10">10</el-radio>
-                    <el-radio :label="100">100</el-radio>
-                    <el-radio :label="500">500</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-              </template>
-            </el-form>
-          </el-col>
-          <el-col :span="8">
-            <div class="grid-content bg-purple">
-              <a>123</a>
-            </div>
-          </el-col>
-        </el-row>
+        <el-form
+          ref="dataForm"
+          :rules="rules"
+          :model="temp"
+          label-position="left"
+          label-width="120px"
+        >
+          <el-divider content-position="left" class="heng">选择参数</el-divider>
+          <template>
+            <el-form-item prop="num">
+              <el-radio-group v-model="temp.num">
+                <el-radio :label="10">10</el-radio>
+                <el-radio :label="100">100</el-radio>
+                <el-radio :label="500">500</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </template>
+        </el-form>
       </div>
     </el-card>
   </div>
@@ -99,25 +93,11 @@ export default {
     },
     handleCreate() {
       c_jenkins.ping(this.temp).then((response) => {
-        console.log(response);
-        this.$router.push("/tasklog")
+        this.$router.push("/tasklog");
       });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.box-card {
-  .title {
-    color: #ed7107;
-    font-size: 1.5em;
-  }
-  .action {
-    float: right;
-    margin: 2px;
-  }
-  .heng {
-    background-color: #ed7107;
-  }
-}
 </style>
