@@ -25,7 +25,7 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
                   url(r'api/jenkins/', include(('jenkins_tasks.urls', 'jenkins_tasks'), namespace="jenkins_tasks")),
               ]
 
-if settings.APP_ENV == 'prod':
+if settings.APP_ENV == 'prod' or settings.APP_ENV == 'test':
     from rest_framework.documentation import include_docs_urls
 
     urlpatterns += [
