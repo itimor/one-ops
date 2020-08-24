@@ -278,13 +278,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .showlog {
-  padding: 10px;
+  padding: 5px 10px;
   top: 0;
   bottom: 0;
+  width: 100%;
   position: fixed;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
 }
 </style>
